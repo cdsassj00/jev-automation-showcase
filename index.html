@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TypeSafe Jev — Enterprise & Public Sector Multi-Criteria Matrix</title>
+  <title>TypeSafe Jev — 3-Step Decision Architecture</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script>
@@ -12,286 +12,340 @@
       theme: {
         extend: {
           colors: {
-            bgDark: '#08090d',
-            surfaceDark: '#0f1118',
-            surfaceElevated: '#151824',
-            borderDark: '#1c2030',
-            borderSubtle: '#161926',
+            bgDark: '#0b0f19',
+            surfaceDark: '#131b2e',
+            surfaceElevated: '#1a243d',
+            borderDark: '#23304d',
+            borderSubtle: '#1b253b',
             accentSky: '#38bdf8',
-            accentEmerald: '#10b981',
-            accentRose: '#f43f5e',
-            accentAmber: '#f59e0b',
-            accentPurple: '#a855f7'
+            accentEmerald: '#34d399',
+            accentRose: '#fb7185',
+            accentAmber: '#fbbf24'
           },
           fontFamily: {
-            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
-            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
           }
         }
       }
     }
   </script>
   <style>
-    body { background-color: #08090d; color: #cbd5e1; }
-    ::placeholder { color: #475569; }
-    .mono-num { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #08090d; }
-    ::-webkit-scrollbar-thumb { background: #1c2030; border-radius: 2px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
-    @keyframes barGrow {
+    body { background-color: #0b0f19; color: #e2e8f0; }
+    .accordion-content { transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.35s ease; }
+    .accordion-open { max-height: 2500px; opacity: 1; pointer-events: auto; }
+    .accordion-closed { max-height: 0; opacity: 0; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; pointer-events: none; }
+    @keyframes barFill {
       from { width: 0%; }
       to { width: var(--target-w); }
     }
-    .prob-bar { animation: barGrow 0.4s ease-out forwards; }
+    .prob-bar { animation: barFill 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
-<body class="min-h-screen text-xs antialiased flex flex-col font-sans selection:bg-sky-500/30">
+<body class="min-h-screen text-sm antialiased flex flex-col font-sans selection:bg-sky-500/30">
 
-  <!-- Top Global Header -->
-  <header class="border-b border-borderDark bg-surfaceDark/90 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-[1600px] mx-auto px-4 h-12 flex items-center justify-between gap-4">
+  <!-- Top Global Header (Clean & Spacious) -->
+  <header class="border-b border-borderDark bg-surfaceDark/80 backdrop-blur sticky top-0 z-50 py-3 px-4 md:px-8">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
       <div class="flex items-center gap-3">
-        <div class="flex items-center gap-1.5 font-bold text-slate-100 tracking-tight">
-          <span class="w-2 h-2 rounded-full bg-accentSky animate-pulse"></span>
-          <span>TYPESAFE</span>
-          <span class="text-slate-600 font-mono">/</span>
-          <span class="text-accentSky font-mono">jev</span>
-          <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400 font-mono">Multi-Criteria Decision System</span>
-        </div>
-        <div class="hidden md:block h-3.5 w-px bg-slate-800"></div>
-        <span class="hidden lg:block text-[11px] text-slate-500">
-          단 1회의 Forward Pass(280ms)로 8~12개 법정·심사 기준을 동시 병렬 평가
-        </span>
+        <span class="w-2.5 h-2.5 rounded-full bg-accentSky animate-pulse"></span>
+        <h1 class="text-base md:text-lg font-extrabold tracking-tight text-white flex items-center gap-2">
+          TypeSafe <span class="text-accentSky">Jev</span> 의사결정 쇼케이스
+        </h1>
+        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">System-One AI</span>
       </div>
 
-      <!-- Real API & Secrets Status & Q&A Trigger -->
-      <div class="flex items-center gap-2">
+      <!-- Action Buttons & Secrets -->
+      <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
         <button onclick="openQnAModal()" 
-                class="bg-accentSky/10 hover:bg-accentSky/20 border border-accentSky/30 text-accentSky px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1.5 transition active:scale-95 shadow-sm">
-          <i class="fa-solid fa-circle-question text-[10px]"></i>
+                class="bg-accentSky/10 hover:bg-accentSky/20 border border-accentSky/30 text-accentSky px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition active:scale-95">
+          <i class="fa-solid fa-circle-question"></i>
           <span>핵심 Q&A: 왜 Jev인가?</span>
         </button>
-        <div class="flex items-center bg-bgDark border border-borderDark rounded px-2 py-1 gap-1.5 w-44 md:w-56">
-          <i class="fa-solid fa-key text-[10px] text-slate-500"></i>
-          <input id="apiKey" type="password" value="__DEFAULT_OPENROUTER_KEY__" placeholder="API Key (비워두면 텔레메트리)" 
-                 class="bg-transparent text-[11px] text-slate-200 placeholder-slate-600 focus:outline-none w-full font-mono" />
-        </div>
-        <span id="connStatus" class="text-[10px] px-2 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 font-mono flex items-center gap-1.5">
-          <i class="fa-solid fa-signal text-[9px]"></i> Calibrated Log
+        <span id="connStatus" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-mono flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt text-amber-400"></i> Calibrated Engine
         </span>
+        <input id="apiKey" type="hidden" value="__DEFAULT_OPENROUTER_KEY__" />
       </div>
     </div>
   </header>
 
-  <!-- Problem Statement & Public Audit Truth Banner -->
-  <section class="border-b border-borderDark bg-surfaceDark px-4 py-3">
-    <div class="max-w-[1600px] mx-auto flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <span class="p-1.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs shrink-0">
-          <i class="fa-solid fa-landmark"></i>
-        </span>
-        <div class="text-[11px] text-slate-300 leading-relaxed">
-          <strong class="text-white">공공 행정 및 엔터프라이즈 감사 대응:</strong> 
-          공공기관에서 생성형 AI를 쓰지 못하는 이유는 <strong>"환각으로 잘못 판정했을 때 감사원 감사나 법적 책임"</strong>을 지기 때문입니다. 
-          Jev는 글을 지어내지 않고, 법령·규정별 <strong>10~12개 심사 기준에 대한 정확한 확률값(0~100%)과 근거 수치</strong>만 0.2초 만에 뽑아내므로 <strong>100% 완벽한 감사 증적(Audit Trail)</strong>을 남길 수 있습니다.
-        </div>
-      </div>
-      <div class="flex items-center gap-2 text-[10px] font-mono shrink-0">
-        <span class="px-2 py-1 bg-bgDark rounded border border-borderDark text-slate-400">감사 증적 대응: <strong class="text-emerald-400">100% 정량 기록</strong></span>
-        <span class="px-2 py-1 bg-bgDark rounded border border-borderDark text-slate-400">판정 속도: <strong class="text-accentSky">280ms (Single Pass)</strong></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Navigation Domains (모든 탭이 8~12개 대규모 병렬 평가) -->
-  <div class="border-b border-borderDark bg-bgDark px-4">
-    <div class="max-w-[1600px] mx-auto flex gap-6 overflow-x-auto text-[11px] font-medium no-scrollbar">
-      <button onclick="setDomain('welfare')" id="nav-welfare" class="py-2.5 border-b-2 border-accentSky text-accentSky flex items-center gap-1.5 font-bold">
-        <span class="px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[9px] font-mono">🏛️ 공공 복지</span>
-        <span>취약계층 복지수급 자격 심사 (10대 법정 요건 동시 병렬 평가)</span>
+  <!-- Domain Tabs Bar -->
+  <nav class="border-b border-borderDark bg-bgDark py-2 px-4">
+    <div class="max-w-5xl mx-auto flex gap-2 overflow-x-auto text-xs no-scrollbar py-1">
+      <button onclick="switchDomain('welfare')" id="tab-welfare" class="px-3.5 py-2 rounded-lg font-bold bg-accentSky text-slate-950 transition flex items-center gap-1.5 shrink-0">
+        <i class="fa-solid fa-landmark"></i> 1. 공공 복지 수급 심사 (10대 기준)
       </button>
-      <button onclick="setDomain('rnd')" id="nav-rnd" class="py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
-        <span class="px-1 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[9px] font-mono">🏛️ 공공 조달</span>
-        <span>정부 R&D / 공공과제 입찰 제안서 적격 심사 (10대 기준)</span>
+      <button onclick="switchDomain('rnd')" id="tab-rnd" class="px-3.5 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-surfaceDark transition flex items-center gap-1.5 shrink-0">
+        <i class="fa-solid fa-award"></i> 2. 정부 R&D 조달 입찰 (10대 기준)
       </button>
-      <button onclick="setDomain('massive')" id="nav-massive" class="py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
-        <span class="px-1 py-0.5 rounded bg-sky-500/20 text-accentSky text-[9px] font-mono">💼 벤처 투자</span>
-        <span>스타트업 투자 실사 (12대 지표 동시 평가)</span>
+      <button onclick="switchDomain('startup')" id="tab-startup" class="px-3.5 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-surfaceDark transition flex items-center gap-1.5 shrink-0">
+        <i class="fa-solid fa-rocket"></i> 3. 스타트업 투자 실사 (12대 지표)
       </button>
-      <button onclick="setDomain('audit')" id="nav-audit" class="py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
-        <span class="px-1 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[9px] font-mono">⚖️ 내부 감사</span>
-        <span>공공 예산 & 법인카드 부정집행 상시 감사 (8대 기준)</span>
-      </button>
-      <button onclick="setDomain('cs')" id="nav-cs" class="py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
-        <span class="px-1 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[9px] font-mono">🚨 민원 대응</span>
-        <span>악성 민원 & 긴급 인박스 다면 트리아지 (8대 기준)</span>
+      <button onclick="switchDomain('audit')" id="tab-audit" class="px-3.5 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-surfaceDark transition flex items-center gap-1.5 shrink-0">
+        <i class="fa-solid fa-receipt"></i> 4. 공공 예산 감사 (8대 기준)
       </button>
     </div>
-  </div>
+  </nav>
 
-  <!-- Main 3-Column Engineering Dashboard -->
-  <main class="max-w-[1600px] mx-auto p-3 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 w-full">
+  <!-- Main Accordion Flow Workspace -->
+  <main class="max-w-5xl mx-auto w-full p-4 md:p-6 flex flex-col gap-4 flex-1">
 
-    <!-- Column 1: State Input & Parallel Questions (3.5 Cols) -->
-    <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-3">
+    <!-- ========================================== -->
+    <!-- ACCORDION STEP 1: Input & Questions -->
+    <!-- ========================================== -->
+    <div class="bg-surfaceDark border border-borderDark rounded-2xl overflow-hidden shadow-lg transition duration-200">
       
-      <div class="bg-surfaceDark border border-borderDark rounded-lg p-3.5 flex flex-col gap-2.5">
-        <div class="flex justify-between items-center">
-          <span class="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-file-invoice text-slate-400"></i> State Context (신청서/제출서류)
+      <!-- Accordion Header 1 -->
+      <button onclick="toggleStep(1)" class="w-full p-4 md:p-5 flex items-center justify-between text-left hover:bg-surfaceElevated/50 transition">
+        <div class="flex items-center gap-3.5">
+          <span class="w-7 h-7 rounded-full bg-accentSky text-slate-950 font-bold flex items-center justify-center text-xs shadow">
+            1
           </span>
-          <button onclick="cycleSample()" class="text-[10px] text-accentSky hover:underline flex items-center gap-1">
-            <i class="fa-solid fa-shuffle text-[9px]"></i> 예시 전환
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>심사 대상 서류 입력 및 평가 기준 명세</span>
+              <span id="step1Badge" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-normal">10대 법정 요건</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">평가할 본문(State)을 검토하고, 한 번에 병렬로 던질 질문 목록을 확인합니다.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-slate-400">
+          <i id="step1Chevron" class="fa-solid fa-chevron-up text-sm transition-transform duration-200"></i>
+        </div>
+      </button>
+
+      <!-- Accordion Body 1 -->
+      <div id="step1Content" class="accordion-content accordion-open px-5 pb-5 border-t border-borderDark/60 pt-4 flex flex-col gap-4">
+        
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-semibold text-slate-300">신청서 및 증빙 서류 본문 (State Context)</span>
+          <button onclick="cycleSample()" class="text-xs text-accentSky hover:underline flex items-center gap-1 font-medium">
+            <i class="fa-solid fa-shuffle text-[11px]"></i> 다른 신청자 사례 불러오기
           </button>
         </div>
 
-        <textarea id="stateInput" rows="6" 
-                  class="w-full bg-bgDark border border-borderDark rounded p-2.5 text-slate-200 text-[11px] font-mono leading-relaxed focus:outline-none focus:border-slate-600 transition resize-none"></textarea>
+        <textarea id="stateInput" rows="5" 
+                  class="w-full bg-bgDark border border-borderDark rounded-xl p-3.5 text-slate-200 text-xs md:text-sm font-mono leading-relaxed focus:outline-none focus:border-accentSky transition resize-none"></textarea>
 
-        <button onclick="dispatchJev()" id="execBtn" 
-                class="w-full bg-slate-100 hover:bg-white text-slate-950 font-bold py-2.5 px-3 rounded text-[11px] transition flex items-center justify-center gap-2 active:scale-[0.99] shadow-sm">
-          <i class="fa-solid fa-play text-[9px]"></i> <span id="btnText">전체 기준 동시 병렬 평가 실행</span>
-        </button>
-      </div>
-
-      <!-- Parallel Questions Manifest -->
-      <div class="bg-surfaceDark border border-borderDark rounded-lg p-3.5 flex-1 flex flex-col">
-        <div class="flex justify-between items-center border-b border-borderDark pb-2 mb-2">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            병렬 평가 질문 명세서 (<span id="qCountBadge">10 Criteria</span>)
-          </span>
-          <span class="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-1 py-0.5 rounded border border-emerald-500/20">
-            Zero Context-Rot
-          </span>
+        <!-- Criteria Tags Chips -->
+        <div>
+          <span class="text-xs font-semibold text-slate-400 block mb-2">동시에 병렬 계산될 평가 기준 (Zero Context-Rot):</span>
+          <div id="criteriaChips" class="flex flex-wrap gap-1.5">
+            <!-- Populated by JS -->
+          </div>
         </div>
-        <div id="questionsList" class="space-y-1.5 overflow-y-auto max-h-[420px] pr-1">
+
+        <!-- Execute Action Trigger Button -->
+        <button onclick="runJevInference()" id="execBtn" 
+                class="w-full bg-accentSky hover:bg-sky-300 text-slate-950 font-extrabold py-3.5 px-4 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-sky-500/20 active:scale-[0.99] mt-1">
+          <i class="fa-solid fa-bolt"></i>
+          <span id="execBtnText">Jev 10대 기준 동시 병렬 평가 실행 (0.28초 소요)</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ACCORDION STEP 2: Probability Matrix -->
+    <!-- ========================================== -->
+    <div class="bg-surfaceDark border border-borderDark rounded-2xl overflow-hidden shadow-lg transition duration-200">
+      
+      <!-- Accordion Header 2 -->
+      <button onclick="toggleStep(2)" class="w-full p-4 md:p-5 flex items-center justify-between text-left hover:bg-surfaceElevated/50 transition">
+        <div class="flex items-center gap-3.5">
+          <span id="step2Num" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold flex items-center justify-center text-xs">
+            2
+          </span>
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>Jev 후보 확률값 전체 분포 & 최적값 선택</span>
+              <span id="step2Badge" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">대기 중</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">글을 지어내지 않고, 모든 후보(점수 1~5점, 참/거짓)의 정밀 확률값(Softmax)을 0.2초 만에 계산합니다.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-slate-400">
+          <i id="step2Chevron" class="fa-solid fa-chevron-down text-sm transition-transform duration-200"></i>
+        </div>
+      </button>
+
+      <!-- Accordion Body 2 -->
+      <div id="step2Content" class="accordion-content accordion-closed px-5 pb-5 border-t border-borderDark/60 pt-4 flex flex-col gap-4">
+        
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-bgDark p-3 rounded-xl border border-borderDark text-xs">
+          <div class="flex items-center gap-2 text-slate-300">
+            <i class="fa-solid fa-circle-info text-accentSky"></i>
+            <span>Jev는 단일 결과만 던지지 않고 <strong>전체 확률 분포(0~100%)</strong>를 공개하여 모델의 확신도를 입증합니다.</span>
+          </div>
+          <div class="font-mono text-emerald-400 font-bold" id="latencyDisplay">
+            평가 소요 시간: -- ms
+          </div>
+        </div>
+
+        <!-- 2-Column Matrix Cards Grid (Roomy & Readable) -->
+        <div id="matrixGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           <!-- Populated by JS -->
         </div>
-      </div>
 
-      <!-- HTTP Telemetry Trace -->
-      <div class="bg-surfaceDark border border-borderDark rounded-lg p-3 text-[10px] font-mono text-slate-400 space-y-1">
-        <div class="flex justify-between text-slate-500 border-b border-borderSubtle pb-1">
-          <span>Inference Trace</span>
-          <span id="traceLatency" class="text-accentSky">Standby</span>
-        </div>
-        <div>MODEL: typesafe/jev (System-1 Decision Architecture)</div>
-        <div id="traceStatus">Awaiting Trigger...</div>
-      </div>
-
-    </div>
-
-    <!-- Column 2: Probability Distribution Matrix (5.5 Cols) -->
-    <div class="lg:col-span-8 xl:col-span-6 flex flex-col gap-3">
-      <div class="bg-surfaceDark border border-borderDark rounded-lg p-3.5 flex flex-col flex-1">
-        
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-borderDark pb-2.5 mb-3">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-[12px] font-bold text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-chart-column text-accentSky"></i> 
-                후보 확률값 전체 분포 & 선택 매트릭스 (Probability Distribution Matrix)
-              </span>
-            </div>
-            <p class="text-[10px] text-slate-400 mt-0.5">
-              각 항목마다 <strong>모든 후보(점수 1~5점, 옵션 A/B/C, True/False)의 정밀 확률값</strong>을 100% 투명하게 확인합니다.
-            </p>
-          </div>
-          <div class="flex items-center gap-2 font-mono text-[10px]">
-            <span class="px-2 py-0.5 rounded bg-bgDark border border-borderDark text-slate-400" id="matrixCountTag">10 Criteria</span>
-            <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold" id="avgConfTag">Avg Conf: --</span>
-          </div>
-        </div>
-
-        <div id="matrixContainer" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 overflow-y-auto max-h-[750px] pr-1">
-          <div class="col-span-full text-center text-slate-600 py-24">
-            <i class="fa-solid fa-layer-group text-4xl mb-3 opacity-30"></i>
-            <p class="text-xs">왼쪽의 [병렬 평가 실행] 버튼을 누르면<br>모든 기준의 후보별 확률값(0~100%)과 최적 선택값이 실시간으로 렌더링됩니다.</p>
-          </div>
-        </div>
+        <!-- Proceed to Step 3 Button -->
+        <button onclick="openStep(3)" class="w-full bg-surfaceElevated hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-xs transition border border-borderDark mt-2">
+          최종 코드 집행 결과(Step 3) 확인하기 <i class="fa-solid fa-arrow-down ml-1"></i>
+        </button>
 
       </div>
     </div>
 
-    <!-- Column 3: Composed in Code & Interactive Decision (3 Cols) -->
-    <div class="lg:col-span-12 xl:col-span-3 flex flex-col gap-3">
+    <!-- ========================================== -->
+    <!-- ACCORDION STEP 3: Final Deterministic Action -->
+    <!-- ========================================== -->
+    <div class="bg-surfaceDark border border-borderDark rounded-2xl overflow-hidden shadow-lg transition duration-200">
       
-      <!-- Interactive Threshold Controller -->
-      <div class="bg-surfaceDark border border-borderDark rounded-lg p-3.5 flex flex-col gap-3">
-        <div class="border-b border-borderDark pb-2 flex justify-between items-center">
-          <span class="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-sliders text-accentAmber"></i> 실시간 심사 임계값 (Threshold)
+      <!-- Accordion Header 3 -->
+      <button onclick="toggleStep(3)" class="w-full p-4 md:p-5 flex items-center justify-between text-left hover:bg-surfaceElevated/50 transition">
+        <div class="flex items-center gap-3.5">
+          <span id="step3Num" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold flex items-center justify-center text-xs">
+            3
           </span>
-          <span class="text-[9px] font-mono text-slate-500">조례/지침 변경 즉각반영</span>
-        </div>
-
-        <div class="space-y-2 text-[11px]">
-          <div class="flex justify-between">
-            <span class="text-slate-400" id="cutoffLabel">적격 승인 기준선 (Cutoff)</span>
-            <span id="cutoffVal" class="font-mono font-bold text-accentSky">75점</span>
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>코드가 집행한 최종 행정·비즈니스 처분 결과</span>
+              <span id="step3Badge" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">대기 중</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Jev가 산출한 수치를 개발자 코드(공식)가 종합하여 최종 전자결재 및 공문을 완성합니다.</p>
           </div>
-          <input type="range" id="cutoffSlider" min="50" max="95" value="75" oninput="updateCutoff(this.value)" 
-                 class="w-full accent-sky-400 bg-slate-800 h-1.5 rounded cursor-pointer" />
-          <p class="text-[10px] text-slate-500 leading-relaxed">
-            프롬프트를 고치지 않고, 코드 기준값(숫자)만 조절하여 승인/반려 판정을 실시간 튜닝합니다.
+        </div>
+        <div class="flex items-center gap-2 text-slate-400">
+          <i id="step3Chevron" class="fa-solid fa-chevron-down text-sm transition-transform duration-200"></i>
+        </div>
+      </button>
+
+      <!-- Accordion Body 3 -->
+      <div id="step3Content" class="accordion-content accordion-closed px-5 pb-5 border-t border-borderDark/60 pt-4 flex flex-col gap-4">
+        
+        <!-- Live Threshold Slider Controller -->
+        <div class="bg-bgDark border border-borderDark rounded-xl p-4 flex flex-col gap-2.5">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-slate-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-sliders text-amber-400"></i>
+              <span>실시간 심사 임계값 조절 (Threshold)</span>
+            </span>
+            <span class="font-mono text-slate-400">프롬프트 수정 0회 · 순수 코드 제어</span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <input type="range" id="cutoffSlider" min="50" max="95" value="75" oninput="updateCutoff(this.value)" 
+                   class="flex-1 accent-sky-400 bg-slate-800 h-2 rounded-lg cursor-pointer" />
+            <span id="cutoffVal" class="font-mono font-extrabold text-accentSky text-base w-14 text-right">75점</span>
+          </div>
+          <p class="text-[11px] text-slate-400">
+            슬라이더를 움직여 합격 커트라인을 올려보세요. 프롬프트를 고치지 않고도 코드의 숫자 기준만으로 <strong>[승인]</strong>에서 <strong>[반려]</strong>로 시스템 결정이 실시간 전환됩니다.
           </p>
         </div>
-      </div>
 
-      <!-- Action Output Box -->
-      <div class="bg-surfaceDark border border-borderDark rounded-lg p-3.5 flex-1 flex flex-col">
-        <div class="flex justify-between items-center border-b border-borderDark pb-2 mb-2.5">
-          <span class="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-file-contract text-accentEmerald"></i> 최종 집행 액션 (Action Output)
-          </span>
-          <span id="finalDecisionBadge" class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
-            Awaiting
-          </span>
-        </div>
-
-        <div id="actionContent" class="flex-1 flex flex-col justify-center">
-          <div class="text-center text-slate-600 py-16">
-            <i class="fa-solid fa-landmark-flag text-3xl mb-2 opacity-30"></i>
-            <p class="text-[11px]">Jev의 확률 판단값들을 결합하여<br>사전 검증된 전자결재 공문 또는 행정처분이 완성됩니다.</p>
+        <!-- Final Action Document Card -->
+        <div id="actionDocumentContainer" class="bg-bgDark border border-borderDark rounded-xl p-5 min-h-[160px] flex flex-col justify-center">
+          <div class="text-center text-slate-500 py-6">
+            <i class="fa-solid fa-file-signature text-3xl mb-2 opacity-30"></i>
+            <p class="text-xs">Step 1에서 [평가 실행]을 누르면<br>Jev의 다차원 확률을 종합한 최종 행정/투자 처분서가 이곳에 완성됩니다.</p>
           </div>
         </div>
 
-        <div class="border-t border-borderDark pt-2 mt-auto text-[10px] font-mono text-slate-500 flex justify-between">
-          <span>감사 대응: 100% 증적 보존</span>
-          <span class="text-emerald-400">Zero Hallucination</span>
-        </div>
       </div>
-
     </div>
 
   </main>
 
-  <!-- Technical Details Footer -->
-  <footer class="border-t border-borderDark bg-surfaceDark py-2.5 px-4 text-[10px] font-mono text-slate-500">
-    <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-      <div class="flex items-center gap-3">
-        <span class="text-slate-400 font-bold">TypeSafe Jev Primitives:</span>
-        <span>Choice (Categorical Softmax)</span> · 
-        <span>Score (Continuous Expected Value)</span> · 
-        <span>Noul (Calibrated Probability 0~1)</span>
-      </div>
-      <div>
-        <a href="https://github.com/cdsassj00/jev-automation-showcase" target="_blank" class="hover:text-slate-300">
-          <i class="fa-brands fa-github"></i> cdsassj00/jev-automation-showcase
-        </a>
-      </div>
+  <!-- Footer -->
+  <footer class="border-t border-borderDark bg-surfaceDark py-4 px-4 text-xs text-slate-500 text-center">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <span>TypeSafe Jev — The First System-One Calibrated Decision Architecture</span>
+      <a href="https://github.com/cdsassj00/jev-automation-showcase" target="_blank" class="text-slate-400 hover:text-slate-200 font-mono">
+        <i class="fa-brands fa-github"></i> Repository
+      </a>
     </div>
   </footer>
 
+  <!-- ========================================== -->
+  <!-- Q&A Explanatory Modal -->
+  <!-- ========================================== -->
+  <div id="qnaModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surfaceDark border border-borderDark rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Header -->
+      <div class="p-4 md:p-5 border-b border-borderDark flex justify-between items-center bg-surfaceElevated">
+        <div class="flex items-center gap-2.5">
+          <span class="p-2 rounded-lg bg-accentSky/10 border border-accentSky/20 text-accentSky text-sm">
+            <i class="fa-solid fa-brain"></i>
+          </span>
+          <div>
+            <h3 class="text-sm md:text-base font-bold text-white">핵심 기술 Q&A: 왜 Jev인가?</h3>
+            <p class="text-xs text-slate-400">엔지니어와 의사결정자가 가장 많이 던지는 2가지 핵심 질문과 해답</p>
+          </div>
+        </div>
+        <button onclick="closeQnAModal()" class="text-slate-400 hover:text-slate-200 text-lg p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-5 overflow-y-auto space-y-4 text-xs leading-relaxed">
+        
+        <!-- Q1 -->
+        <div class="bg-bgDark border border-borderDark rounded-xl p-4 space-y-2">
+          <div class="flex items-start gap-2 text-amber-400 font-bold text-sm">
+            <span>Q1.</span>
+            <span>"어차피 사람에게 보낼 답변은 LLM이 다시 써야 하는 것 아닌가요? 이게 왜 혁신인가요?"</span>
+          </div>
+          <div class="text-slate-300 text-xs pl-4 space-y-2 border-l border-borderDark ml-1">
+            <p>
+              <strong>답변:</strong> 실제 엔터프라이즈와 공공 행정 시스템의 90%는 <strong>"장황한 글쓰기"</strong>가 아니라 <strong>"결정(Decision)과 시스템 트랜잭션"</strong>이기 때문입니다.
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-slate-400">
+              <li><strong>글이 필요 없는 업무가 대부분입니다:</strong> 복지비 전산 입금, 은행 대출 승인, 쿠팡 물류 배차, 이상거래 차단은 글을 쓰는 게 아니라 <strong>즉시 DB 업데이트와 API를 호출</strong>해야 합니다.</li>
+              <li><strong>글이 필요해도 LLM이 쓰면 안 됩니다:</strong> LLM에게 매번 글을 쓰게 하면 엉뚱한 규정을 지어내는 <strong>환각(말실수)</strong>으로 법적 책임을 집니다. 법무팀이 검증한 <strong>공식 템플릿</strong>에 결과 수치만 주입하는 것이 100배 안전합니다.</li>
+              <li><strong>비즈니스 통제권의 회복:</strong> "합격 기준을 5% 올리자"고 할 때 프롬프트를 고치면 LLM 성격이 망가집니다. Jev는 프롬프트 수정 없이 <strong>코드의 숫자(<code class="text-accentSky">if score >= 80</code>)</strong>만 바꾸면 즉시 완벽하게 제어됩니다.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="bg-bgDark border border-borderDark rounded-xl p-4 space-y-2">
+          <div class="flex items-start gap-2 text-accentSky font-bold text-sm">
+            <span>Q2.</span>
+            <span>"판단을 잘하려면 모델 체급이 좋아야 하지 않나요? 모델이 멍청하면 정량 판단도 결국 환각 아닌가요?"</span>
+          </div>
+          <div class="text-slate-300 text-xs pl-4 space-y-2 border-l border-borderDark ml-1">
+            <p>
+              <strong>답변:</strong> 모델의 독해력이 중요한 것은 사실입니다. 하지만 <strong>기존 LLM과 Jev는 거짓말(환각)의 구조 자체가 완전히 다릅니다.</strong>
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-slate-400">
+              <li><strong>소설 창작형 환각의 원천 차단:</strong> 기존 LLM은 단어를 이어 쓰다가 맥락을 지어내어 없는 판례나 법 조항을 날조합니다. Jev는 글을 일절 쓰지 않고 <strong>주어진 서류(State)라는 팩트 경계선 안에서만 확률을 계산</strong>하므로 창작형 거짓말이 원천 차단됩니다.</li>
+              <li><strong>모를 땐 솔직하게 헷갈린다고 자백함 (Confidence):</strong> 기존 LLM은 자기가 틀렸을 때도 100% 확신하는 척 사기를 칩니다. 반면 Jev는 정보가 부족하면 <strong>확률이 50:50으로 갈라지며 확신도(Confidence)가 바닥</strong>을 칩니다.</li>
+              <li><strong>인간 심사역 호출 안전장치:</strong> 코드가 <code class="text-rose-400">if (confidence < 0.7)</code>을 감지하면 즉시 <strong>"AI 자동 판단을 중단하고 사람 심사관에게 이관"</strong>하므로 시스템 사고를 사전에 100% 차단할 수 있습니다.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="p-3 border-t border-borderDark bg-surfaceElevated flex justify-end">
+        <button onclick="closeQnAModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition">
+          닫기 (Close)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Application Logic -->
   <script>
-    // --- Massive Multi-Criteria Domains Database ---
+    // --- Data Store ---
     const DOMAINS = {
-      // 1. 공공 복지 수급 자격 심사 (10대 법정 요건)
       welfare: {
-        title: "취약계층 복지수급 자격 심사 (10대 법정 기준)",
-        btnLabel: "10대 복지 법정요건 동시 병렬 심사",
-        cutoffLabel: "복지 수급 적격 커트라인",
+        title: "공공 복지 수급 심사 (10대 기준)",
+        badge: "10대 법정 요건",
         samples: [
           `[신청자 A: 긴급 생계·의료 복지지원 신청서]
 - 가구 구성: 한부모 가구 (본인 38세, 미성년 자녀 2인, 8세/6세).
@@ -304,301 +358,280 @@
 - 가구 구성: 1인 가구 (본인 42세, 미혼).
 - 소득 현황: 프리랜서 디자이너로 공식 신고 소득은 0원이나, 최근 3개월 통장 입금 내역 확인 결과 월평균 380만 원 지속 입금 확인됨.
 - 재산 현황: 본인 명의 전세보증금 1억 8,000만 원, 2,500cc 중형 승용차(시가 2,200만 원) 보유.
-- 부양의무자: 부친(대기업 임원 은퇴, 고액 연금 수급자) 동거는 아니나 경제적 지원 가능권.
-- 중복 수급 여부: 1년 전 청년 취업지원금 부정수급 환수 처분 이력 1건 존재.`
+- 부양의무자: 부친(대기업 임원 은퇴, 고액 연금 수급자) 경제적 지원 가능권.
+- 중복 수급 여부: 1년 전 청년 지원금 부정수급 환수 처분 이력 1건 존재.`
         ],
         questions: [
-          { id: "w1", name: "1. 소득 인정액 기준 충족", type: "Noul", prompt: "소득이 기준 중위소득 50% 이하 법정 요건을 충족하는가?" },
-          { id: "w2", name: "2. 재산 과세표준 상한 적격", type: "Noul", prompt: "대도시 기준 일반재산 상한액(1억 3천만 원) 미만인가?" },
-          { id: "w3", name: "3. 차량 가액 기준 충족", type: "Choice", prompt: "보유 차량 기준 적격성", options: ["차량 없음/생업용(적격)", "배기량 1600cc 미만", "고급/대형차(부적격)"] },
-          { id: "w4", name: "4. 부양의무자 기준 충족", type: "Noul", prompt: "부양의무자가 없거나 부양능력이 없는 상태인가?" },
-          { id: "w5", name: "5. 주거 환경 취약도", type: "Score", prompt: "주거 불안정성 및 취약도 수준 (1~5점)", min: 1, max: 5 },
-          { id: "w6", name: "6. 미성년/장애 가구원 가점", type: "Score", prompt: "돌봄이 필요한 가구원 비중 (1~5점)", min: 1, max: 5 },
-          { id: "w7", name: "7. 과거 부정수급/체납 이력", type: "Noul", prompt: "공공지원금 부정수급 또는 고의 환수 처분 이력이 존재하는가?" },
-          { id: "w8", name: "8. 타 부처 중복 수급 여부", type: "Choice", prompt: "중앙부처/지자체 유사 급여 중복 수혜 여부", options: ["중복 없음(단독 신청)", "일부 중복(차액 지급)", "전액 중복(지급 불가)"] },
-          { id: "w9", name: "9. 의료/생계 긴급성", type: "Score", prompt: "즉각적인 행정 개입이 필요한 위기도 (1~5점)", min: 1, max: 5 },
-          { id: "w10", name: "10. 필수 행정 증빙서류 완비", type: "Noul", prompt: "신청에 필요한 필수 소득·재산 증빙 서류가 제출되었는가?" }
+          { id: "w1", name: "1. 소득 인정액 기준 충족", type: "Noul", weight: 20 },
+          { id: "w2", name: "2. 재산 과세표준 상한 적격", type: "Noul", weight: 15 },
+          { id: "w3", name: "3. 차량 가액 기준 적격성", type: "Choice", options: ["차량 없음(적격)", "1600cc 미만", "대형차(부적격)"], weight: 10 },
+          { id: "w4", name: "4. 부양의무자 기준 충족", type: "Noul", weight: 15 },
+          { id: "w5", name: "5. 주거 환경 취약도", type: "Score", weight: 15 },
+          { id: "w6", name: "6. 미성년 가구원 가점", type: "Score", weight: 10 },
+          { id: "w7", name: "7. 부정수급/체납 이력", type: "Noul", weight: -30 },
+          { id: "w8", name: "8. 타 부처 중복 수급 여부", type: "Choice", options: ["중복 없음(단독)", "일부 중복", "전액 중복"], weight: 10 },
+          { id: "w9", name: "9. 의료/생계 긴급성", type: "Score", weight: 15 },
+          { id: "w10", name: "10. 필수 증빙서류 완비", type: "Noul", weight: 5 }
         ]
       },
-
-      // 2. 공공 조달 / 정부 R&D 과제 적격 심사 (10대 기준)
       rnd: {
-        title: "정부 R&D / 공공 조달 입찰 제안서 적격 심사 (10대 기준)",
-        btnLabel: "10대 공공조달 감사기준 병렬 심사",
-        cutoffLabel: "사업자 선정 적격 커트라인",
+        title: "정부 R&D 조달 입찰 (10대 기준)",
+        badge: "10대 조달청 감사기준",
         samples: [
           `[공공 R&D 입찰 제안서: 한국차세대솔루션(주)]
 - 사업명: 지자체 스마트 상수도 누수 탐지 AI 시스템 구축 용역 (사업비 18억 원).
 - 기업 규모: 벤처기업 인증 보유 이노비즈 중소기업 (설립 6년차).
-- 기술력: TRL 7단계(상용화 검증 완료) 달성, 공인 시험인증원(KTL) 공인 성적서 첨부.
-- 재무 건전성: 부채비율 85%, 유동비율 160%, 최근 3개년 연속 흑자 유지.
-- 납품 실적: 유사 공공기관 수자원 모니터링 실적 4건 (총 누적 35억 원).
-- 참여 인력: 핵심 박사급 연구원 3인 투입률 80% 이상 확약.
-- 제재 이력: 국가 R&D 참여제한 이력 없음, 부정당업자 제재 이력 없음, 하도급법 위반 무.`,
+- 기술력: TRL 7단계(상용화 검증 완료) 달성, 공인 시험인증원(KTL) 성적서 첨부.
+- 재무 건전성: 부채비율 85%, 유동비율 160%, 최근 3개년 연속 흑자.
+- 납품 실적: 동종 유사 공공기관 모니터링 실적 4건 (총 누적 35억 원).
+- 제재 이력: 국가 R&D 참여제한 이력 없음, 부정당업자 제재 없음.`,
           `[공공 R&D 입찰 제안서: 미래글로벌아이티(주)]
 - 사업명: 지자체 스마트 상수도 누수 탐지 AI 시스템 구축 용역 (사업비 18억 원).
-- 기업 규모: 설립 1년차 법인, 벤처/이노비즈 인증 미보유.
-- 기술력: 상용 제품 없이 프로토타입(TRL 3단계) 수준, 자체 시험성적서만 제출(공인 성적서 부재).
-- 재무 건전성: 자본잠식률 65%, 부채비율 480%, 임금 체불 진정 접수 이력 존재.
-- 납품 실적: 동종 유사 분야 지자체 납품 실적 전무(0건).
-- 참여 인력: 외부 외주 용역 인력 90% 구성으로 핵심 기술인력 부재.
-- 제재 이력: 2년 전 국책과제 연구비 유용으로 경고 처분 1건 이력 확인.`
+- 기술력: 프로토타입(TRL 3단계) 수준, 공인 성적서 미제출.
+- 재무 건전성: 자본잠식률 65%, 부채비율 480%, 임금 체불 이력 존재.
+- 납품 실적: 동종 공공기관 납품 실적 전무 (0건).
+- 제재 이력: 2년 전 국책과제 연구비 유용으로 경고 처분 1건 확인.`
         ],
         questions: [
-          { id: "r1", name: "1. 기술 성숙도(TRL) 요건", type: "Choice", prompt: "기술성숙도 달성 수준", options: ["TRL 7단계 이상(상용화)", "TRL 5~6단계(시제품)", "TRL 4단계 이하(미흡)"] },
-          { id: "r2", name: "2. 공인 시험인증서 적격", type: "Noul", prompt: "KOLAS 공인 시험기관의 검증 성적서가 구비되었는가?" },
-          { id: "r3", name: "3. 유사 공공기관 납품 실적", type: "Score", prompt: "동종 분야 공공 납품 레퍼런스 규모 (1~5점)", min: 1, max: 5 },
-          { id: "r4", name: "4. 재무 건전성 및 자본잠식", type: "Noul", prompt: "자본잠식 및 신용평가 B등급 미만 부적격 기업인가?" },
-          { id: "r5", name: "5. 국가 R&D 참여제한/제재 이력", type: "Noul", prompt: "국가연구개발사업 참여제한 또는 부정당업자 등록 이력이 존재하는가?" },
-          { id: "r6", name: "6. 핵심 연구인력 투입 비중", type: "Score", prompt: "전담 기술인력의 내부 정규직 참여도 (1~5점)", min: 1, max: 5 },
-          { id: "r7", name: "7. 상생협력/지역 중소기업 가점", type: "Score", prompt: "지역 중소기업 상생 및 고용창출 기여도 (1~5점)", min: 1, max: 5 },
-          { id: "r8", name: "8. 하도급법/임금체불 위반 여부", type: "Noul", prompt: "최근 3년 내 하도급법 위반 또는 고용노동부 임금체불 이력이 있는가?" },
-          { id: "r9", name: "9. 보안 및 데이터 주권 대책", type: "Choice", prompt: "공공망 클라우드 보안인증(CSAP) 준비 상태", options: ["CSAP 인증 완료", "심사 진행 중", "미인증(보안 미비)"] },
-          { id: "r10", name: "10. 제안 사업비 책정의 적정성", type: "Score", prompt: "인건비/직접비 내역의 조달청 표준단가 부합성 (1~5점)", min: 1, max: 5 }
+          { id: "r1", name: "1. 기술 성숙도(TRL 7단계)", type: "Choice", options: ["TRL 7 이상(상용화)", "TRL 5~6(시제품)", "TRL 4 이하"], weight: 20 },
+          { id: "r2", name: "2. 공인 시험인증서 적격", type: "Noul", weight: 15 },
+          { id: "r3", name: "3. 유사 공공기관 납품 실적", type: "Score", weight: 15 },
+          { id: "r4", name: "4. 자본잠식/재무 부실 여부", type: "Noul", weight: -30 },
+          { id: "r5", name: "5. 국가 R&D 참여제한 이력", type: "Noul", weight: -35 },
+          { id: "r6", name: "6. 핵심 연구인력 투입 비중", type: "Score", weight: 10 },
+          { id: "r7", name: "7. 지역 중소기업 상생 가점", type: "Score", weight: 10 },
+          { id: "r8", name: "8. 하도급법 위반 이력", type: "Noul", weight: -20 },
+          { id: "r9", name: "9. CSAP 클라우드 보안인증", type: "Choice", options: ["인증 완료", "심사 중", "미인증"], weight: 15 },
+          { id: "r10", name: "10. 사업비 책정의 적정성", type: "Score", weight: 10 }
         ]
       },
-
-      // 3. 스타트업 벤처 투자 실사 (12대 지표)
-      massive: {
-        title: "스타트업 투자 12대 차원 다면 실사",
-        btnLabel: "12개 지표 동시 병렬 평가 실행",
-        cutoffLabel: "투자 통과 커트라인",
+      startup: {
+        title: "스타트업 투자 실사 (12대 지표)",
+        badge: "12대 다면 지표",
         samples: [
-          `[스타트업 A 피치 요약: 클라우드 옵저버빌리티 AI 솔루션]
-- 창업자: AWS 출신 수석 아키텍트 2인 공동창업, 이전 스타트업 M&A 엑싯 경험 보유.
+          `[스타트업 A: 클라우드 옵저버빌리티 솔루션]
+- 창업자: AWS 출신 수석 아키텍트 2인, 이전 스타트업 엑싯 성공 경험.
 - 시장: 글로벌 클라우드 모니터링 시장 (TAM 약 35조 원 규모, 연 18% 성장).
-- 지표: 월 반복 매출(MRR) 8,500만 원 달성, 출시 6개월 만에 유료 고객사 42곳 확보. 순 매출 유지율(NDR) 135%.
-- 기술 차별점: eBPF 기반 커널 레벨 제로오버헤드 텔레메트리 특허 2건 출원 완료.
-- 리스크: 데이터 주권 및 개인정보보호 컴플라이언스(GDPR/HIPAA) 표준 인증 심사 진행 중.`,
-          `[스타트업 B 피치 요약: 생성형 AI 웹툰 자동 채색 툴]
-- 창업자: 대학교 동아리 출신 신규 창업팀, 상용 제품 출시 경험 없음.
-- 시장: 웹툰/일러스트 보조 시장 (TAM 8,000억 원 규모).
-- 지표: 베타 가입자 5,000명, 유료 결제 전환율 1.2%, 월 MRR 240만 원. CAC가 LTV보다 높은 상태.
-- 기술 차별점: 오픈소스 파인튜닝 위주로 독자 특허 없음. 저작권 침해 집단 소송 리스크 노출.
-- 리스크: GPU 서버 비용으로 인한 심각한 런웨이(3개월) 고갈 위기.`
+- 지표: 월 반복 매출(MRR) 8,500만 원, 유료 고객사 42곳, 순 매출 유지율(NDR) 135%.
+- 기술력: eBPF 기반 제로오버헤드 텔레메트리 특허 2건 출원 완료.`,
+          `[스타트업 B: 웹툰 자동 채색 AI 툴]
+- 창업자: 대학교 동아리 출신 신규 창업팀, 상용 배포 경험 없음.
+- 지표: 베타 가입자 5,000명, 유료 결제 전환율 1.2%, 월 MRR 240만 원.
+- 기술력: 오픈소스 파인튜닝 위주로 독자 특허 없음. 저작권 소송 리스크 노출.
+- 런웨이: GPU 서버 비용으로 3개월 내 자금 고갈 위기.`
         ],
         questions: [
-          { id: "q1", name: "1. 시장 규모 (TAM) 잠재력", type: "Score", prompt: "시장 규모와 성장성 (1~5)", min: 1, max: 5 },
-          { id: "q2", name: "2. 기술적 해자 (Moat)", type: "Score", prompt: "기술의 모방 난이도 (1~5)", min: 1, max: 5 },
-          { id: "q3", name: "3. 창업팀 과거 엑싯 경험", type: "Noul", prompt: "성공적인 M&A/엑싯 경험이 존재하는가?" },
-          { id: "q4", name: "4. 고객 유지율 (NDR)", type: "Choice", prompt: "고객 리텐션 건전성", options: ["우수(130%+)", "보통(100~130%)", "이탈 위험(<100%)"] },
-          { id: "q5", name: "5. 매출 성장 속도", type: "Score", prompt: "MRR 성장 모멘텀 (1~5)", min: 1, max: 5 },
-          { id: "q6", name: "6. 지식재산권 소송 리스크", type: "Noul", prompt: "저작권 침해 또는 소송 분쟁이 존재하는가?" },
-          { id: "q7", name: "7. CAC/단위경제학 건전성", type: "Choice", prompt: "고객 획득 비용 구조", options: ["수익성 우수(LTV>3xCAC)", "균형", "적자 심각"] },
-          { id: "q8", name: "8. 글로벌 컴플라이언스(GDPR)", type: "Noul", prompt: "글로벌 규제 준수 요건을 충족하는가?" },
-          { id: "q9", name: "9. 비즈니스 모델 확장성", type: "Score", prompt: "엔터프라이즈 확장성 (1~5)", min: 1, max: 5 },
-          { id: "q10", name: "10. 후속 투자 유치 용이성", type: "Choice", prompt: "시리즈 후속 투자 가능성", options: ["매우 높음", "보통", "낮음"] },
-          { id: "q11", name: "11. 런웨이 6개월 이상 안정성", type: "Noul", prompt: "현재 자금으로 6개월 이상 생존 가능한가?" },
-          { id: "q12", name: "12. 제품 출시 및 배포 속도", type: "Score", prompt: "배포 안정성 및 실행력 (1~5)", min: 1, max: 5 }
+          { id: "s1", name: "1. 시장 규모 (TAM) 잠재력", type: "Score", weight: 15 },
+          { id: "s2", name: "2. 기술적 해자 (Moat)", type: "Score", weight: 20 },
+          { id: "s3", name: "3. 창업팀 과거 엑싯 경험", type: "Noul", weight: 15 },
+          { id: "s4", name: "4. 고객 유지율 (NDR)", type: "Choice", options: ["우수(130%+)", "보통(100~130%)", "위험(<100%)"], weight: 15 },
+          { id: "s5", name: "5. 매출 성장 모멘텀", type: "Score", weight: 12 },
+          { id: "s6", name: "6. 소송/저작권 침해 리스크", type: "Noul", weight: -25 },
+          { id: "s7", name: "7. CAC/단위경제학 건전성", type: "Choice", options: ["수익성 우수", "균형", "적자 심각"], weight: 10 },
+          { id: "s8", name: "8. 글로벌 컴플라이언스", type: "Noul", weight: 5 },
+          { id: "s9", name: "9. 비즈니스 모델 확장성", type: "Score", weight: 10 },
+          { id: "s10", name: "10. 후속 펀딩 용이성", type: "Choice", options: ["매우 높음", "보통", "낮음"], weight: 8 },
+          { id: "s11", name: "11. 런웨이 6개월 이상 안정", type: "Noul", weight: 8 },
+          { id: "s12", name: "12. 제품 배포 속도", type: "Score", weight: 10 }
         ]
       },
-
-      // 4. 공공 예산 & 법인카드 감사 (8대 기준)
       audit: {
-        title: "공공 예산 & 법인카드 부정집행 상시 감사 (8대 기준)",
-        btnLabel: "8대 회계감사 법정지침 병렬 심사",
-        cutoffLabel: "승인 커트라인 (이상징후 감지)",
+        title: "공공 예산 & 법인카드 상시 감사 (8대 기준)",
+        badge: "8대 회계 감사기준",
         samples: [
-          `[지출 품의서 건 A: 관외 심야 결제]
+          `[품의서 건 A: 심야 유흥업소 결제]
 - 결제 일시: 2026-09-18 23:45 (심야 시간대)
 - 가맹점명: OO유흥주점&바 (강남구 논현동)
-- 결제 금액: 680,000원 (건당 50만원 초과)
-- 품의 사유: 주요 정책 파트너사 야간 간담회 및 현안 논의
-- 지출 예산 비목: 사업추진비 (기관 공통)
-- 동석자 명단: 2인 기재 (1인당 340,000원 지출 산출됨)
-- 특이 사항: 주말 금요일 심야, 업무 관할구역(세종시) 외 120km 이격지 결제.`,
-          `[지출 품의서 건 B: 팀 내 회의 식대]
-- 결제 일시: 2026-09-19 12:20 (정규 점심시간대)
+- 결제 금액: 680,000원 (1인당 34만원 지출)
+- 품의 사유: 파트너사 야간 간담회 및 현안 논의
+- 특이 사항: 주말 금요일 심야, 세종 청사 관할구역 외 120km 이격지 결제.`,
+          `[품의서 건 B: 정규 회의 식대]
+- 결제 일시: 2026-09-19 12:20 (점심시간대)
 - 가맹점명: 종로 설렁탕본점
 - 결제 금액: 48,000원 (4인 기준 1인당 12,000원)
-- 품의 사유: 주간 업무계획 수립 및 실무 회의 점심 식대
-- 지출 예산 비목: 부서운영비
-- 동석자 명단: 팀원 4인 실명 기재 및 회의록 첨부 완비
-- 특이 사항: 청사 반경 1km 이내 가맹점, 카드 사용 제한시간 미해당.`
+- 품의 사유: 주간 업무계획 수립 회의 점심 식대
+- 특이 사항: 청사 반경 1km 이내, 회의록 첨부 완비.`
         ],
         questions: [
-          { id: "a1", name: "1. 심야 제한시간대(23시 이후) 사용", type: "Noul", prompt: "사규 및 공공지침상 금지된 심야 제한시간대 결제인가?" },
-          { id: "a2", name: "2. 의무적 제한 가맹점(유흥/사치)", type: "Noul", prompt: "클린카드 결제 금지 업종(유흥/주점/골프)에 해당하는가?" },
-          { id: "a3", name: "3. 1인당 식대 집행 한도 초과", type: "Choice", prompt: "1인당 지출 금액 한도(3만원/5만원) 적격성", options: ["한도 내 정상", "주의(한도 근접)", "한도 초과(위반)"] },
-          { id: "a4", name: "4. 관할 구역 외 원거리 결제", type: "Noul", prompt: "출장 명령서 없이 청사 관할구역 100km 외 지역에서 집행되었는가?" },
-          { id: "a5", name: "5. 건당 50만원 이상 주임 증빙 완비", type: "Noul", prompt: "50만원 초과 시 필수 첨부인 간담회 증빙 및 상대방 실명이 있는가?" },
-          { id: "a6", name: "6. 동일 가맹점 쪼개기 분할 결제", type: "Noul", prompt: "한도 회피를 위한 시간차 분할 결제 의심 정황이 있는가?" },
-          { id: "a7", name: "7. 사업 목적과의 연관도", type: "Score", prompt: "배정된 예산 비목 본래 취지에 부합하는가? (1~5점)", min: 1, max: 5 },
-          { id: "a8", name: "8. 회계 감사 위험 등급", type: "Choice", prompt: "감사원 감사 지적 노출 위험도", options: ["정상(Low)", "주의(Medium)", "위법 의심(Critical)"] }
-        ]
-      },
-
-      // 5. 민원 대응 & 긴급 CS 라우터 (8대 기준)
-      cs: {
-        title: "악성 민원 & 긴급 인박스 다면 트리아지 (8대 기준)",
-        btnLabel: "8대 민원 평가기준 병렬 심사",
-        cutoffLabel: "정상 처리 vs 비상 에스컬레이션 기준선",
-        samples: [
-          `[민원 접수 건: 정보공개 청구 및 직무유기 고발 예고]
-접수 일시: 2026-09-19 14:15
-제목: 공공 입찰 심사 결과 채점표 즉시 공개 요구 및 직무유기 고소 예고
-내용: 지난주 발표된 폐기물 처리시설 증설 사업 입찰에서 우리 업체가 부당하게 탈락했습니다. 평가위원 명단과 위원별 채점 세부표를 내일 정오까지 전원 공개하지 않으면 담당 과장과 주무관을 직권남용 및 직무유기로 감사원과 검찰청에 고발하고 언론사에 보도자료 배포하겠습니다. 당장 전화하세요.`,
-          `[민원 접수 건: 무인민원발급기 위치 문의]
-접수 일시: 2026-09-19 16:30
-제목: 주민센터 무인발급기 주말 이용 시간 문의
-내용: 안녕하세요, 토요일 오전에 주민등록등본을 출력해야 하는데 청사 1층 무인민원발급기가 주말에도 24시간 개방되는지 문의드립니다. 답변 부탁드립니다.`
-        ],
-        questions: [
-          { id: "c1", name: "1. 형사 고발/감사 청구 명시 여부", type: "Noul", prompt: "사법기관 고소/고발 또는 감사원 감사 청구를 예고했는가?" },
-          { id: "c2", name: "2. 언론 제보 및 집단 민원 예고", type: "Noul", prompt: "언론 보도자료 배포나 집단 시위를 협박/예고했는가?" },
-          { id: "c3", name: "3. 민원인 감정 격앙 및 공격성", type: "Score", prompt: "폭언, 협박, 공격적 어조의 강도 (1~5점)", min: 1, max: 5 },
-          { id: "c4", name: "4. 전담 처리 부서 지정", type: "Choice", prompt: "주무 배정 부서", options: ["감사관실(법무지원)", "입찰주관부서", "민원종합안내"] },
-          { id: "c5", name: "5. 회신 요구 시한의 긴급도", type: "Choice", prompt: "요구 시한의 촉박성", options: ["즉시/당일(긴급)", "24시간 이내", "일반(7일 이내)"] },
-          { id: "c6", name: "6. 비공개 행정정보 요구 여부", type: "Noul", prompt: "법정 비공개 대상(평가위원 개인정보 등)을 요구하는가?" },
-          { id: "c7", name: "7. 과거 악성/반복 민원인 여부", type: "Noul", prompt: "반복적인 동일 취지 억지 민원인 필터링 이력이 있는가?" },
-          { id: "c8", name: "8. 행정 개입 시급성 종합 평가", type: "Score", prompt: "기관 신뢰도 및 분쟁 방지를 위한 대응 시급도 (1~5점)", min: 1, max: 5 }
+          { id: "a1", name: "1. 심야 제한시간대(23시 이후) 결제", type: "Noul", weight: -30 },
+          { id: "a2", name: "2. 클린카드 제한업종(유흥/주점)", type: "Noul", weight: -40 },
+          { id: "a3", name: "3. 1인당 집행 한도 초과", type: "Choice", options: ["한도 내 정상", "주의", "초과 위반"], weight: -20 },
+          { id: "a4", name: "4. 관할 구역 외 원거리 결제", type: "Noul", weight: -25 },
+          { id: "a5", name: "5. 건당 50만원 이상 주임 증빙", type: "Noul", weight: 15 },
+          { id: "a6", name: "6. 쪼개기 분할 결제 의심", type: "Noul", weight: -30 },
+          { id: "a7", name: "7. 사업 목적 부합도", type: "Score", weight: 20 },
+          { id: "a8", name: "8. 감사 위험도 등급", type: "Choice", options: ["정상(Low)", "주의", "위법의심"], weight: 15 }
         ]
       }
     };
 
-    let currentDomain = 'welfare';
+    let currentDomainKey = 'welfare';
     let sampleIdx = 0;
     let currentCutoff = 75;
-    let lastEvaluatedResults = null;
+    let currentEvaluatedResults = null;
 
-    function setDomain(domainKey) {
-      currentDomain = domainKey;
-      sampleIdx = 0;
-      
-      document.querySelectorAll('div.border-b button').forEach(b => {
-        b.className = 'py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-1.5';
-      });
-      const activeBtn = document.getElementById(`nav-${domainKey}`);
-      if (activeBtn) {
-        activeBtn.className = 'py-2.5 border-b-2 border-accentSky text-accentSky flex items-center gap-1.5 font-bold text-slate-100';
+    // --- Accordion Controls ---
+    function toggleStep(stepNum) {
+      const content = document.getElementById(`step${stepNum}Content`);
+      const chevron = document.getElementById(`step${stepNum}Chevron`);
+      const isOpen = content.classList.contains('accordion-open');
+
+      if (isOpen) {
+        content.classList.remove('accordion-open');
+        content.classList.add('accordion-closed');
+        chevron.className = "fa-solid fa-chevron-down text-sm transition-transform duration-200";
+      } else {
+        content.classList.remove('accordion-closed');
+        content.classList.add('accordion-open');
+        chevron.className = "fa-solid fa-chevron-up text-sm transition-transform duration-200";
       }
-
-      renderDomainUI();
     }
 
-    function renderDomainUI() {
-      const dom = DOMAINS[currentDomain];
-      document.getElementById('stateInput').value = dom.samples[sampleIdx % dom.samples.length];
-      document.getElementById('btnText').innerText = dom.btnLabel;
-      document.getElementById('cutoffLabel').innerText = dom.cutoffLabel;
-      document.getElementById('qCountBadge').innerText = `${dom.questions.length} Criteria`;
-      document.getElementById('matrixCountTag').innerText = `${dom.questions.length} Criteria`;
+    function openStep(stepNum) {
+      const content = document.getElementById(`step${stepNum}Content`);
+      const chevron = document.getElementById(`step${stepNum}Chevron`);
+      content.classList.remove('accordion-closed');
+      content.classList.add('accordion-open');
+      chevron.className = "fa-solid fa-chevron-up text-sm transition-transform duration-200";
 
-      // Render Questions Manifest
-      const qBox = document.getElementById('questionsList');
-      qBox.innerHTML = dom.questions.map((q, i) => `
-        <div class="bg-bgDark p-2 rounded border border-borderDark/60 flex items-center justify-between text-[10px]">
-          <div class="truncate max-w-[210px]">
-            <span class="text-slate-500 font-mono">#${i+1}</span>
-            <span class="text-slate-300 font-medium ml-1">${q.name}</span>
-          </div>
-          <span class="text-[9px] px-1 py-0.5 rounded font-mono font-bold ${
-            q.type === 'Noul' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-            q.type === 'Score' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-            'bg-sky-500/10 text-sky-400 border border-sky-500/20'
-          }">${q.type}</span>
-        </div>
+      // Scroll smoothly to this step
+      content.parentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // --- Domain Switcher ---
+    function switchDomain(domainKey) {
+      currentDomainKey = domainKey;
+      sampleIdx = 0;
+
+      // Update Tab Styles
+      ['welfare', 'rnd', 'startup', 'audit'].forEach(k => {
+        const btn = document.getElementById(`tab-${k}`);
+        if (k === domainKey) {
+          btn.className = 'px-3.5 py-2 rounded-lg font-bold bg-accentSky text-slate-950 transition flex items-center gap-1.5 shrink-0 shadow-sm';
+        } else {
+          btn.className = 'px-3.5 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-surfaceDark transition flex items-center gap-1.5 shrink-0';
+        }
+      });
+
+      renderDomainData();
+    }
+
+    function renderDomainData() {
+      const dom = DOMAINS[currentDomainKey];
+      document.getElementById('stateInput').value = dom.samples[sampleIdx % dom.samples.length];
+      document.getElementById('step1Badge').innerText = dom.badge;
+      document.getElementById('execBtnText').innerText = `Jev ${dom.questions.length}개 기준 동시 병렬 평가 실행 (0.28초)`;
+
+      // Render Question Chips in Step 1
+      const chips = document.getElementById('criteriaChips');
+      chips.innerHTML = dom.questions.map((q, i) => `
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs bg-bgDark border border-borderDark text-slate-300">
+          <span class="text-accentSky font-mono font-bold">#${i+1}</span>
+          <span>${q.name}</span>
+          <span class="text-[10px] text-slate-500 font-mono">(${q.type})</span>
+        </span>
       `).join('');
 
-      // Reset Matrix and Output
-      document.getElementById('matrixContainer').innerHTML = `
-        <div class="col-span-full text-center text-slate-600 py-24">
-          <i class="fa-solid fa-layer-group text-4xl mb-3 opacity-30"></i>
-          <p class="text-xs">왼쪽의 [병렬 평가 실행] 버튼을 누르면<br>${dom.questions.length}개 기준의 후보별 확률값(0~100%)과 최적 선택값이 실시간으로 렌더링됩니다.</p>
+      // Reset Step 2 and 3
+      document.getElementById('step2Badge').innerText = "대기 중";
+      document.getElementById('step2Badge').className = "text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono";
+      document.getElementById('step2Num').className = "w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold flex items-center justify-center text-xs";
+      
+      document.getElementById('matrixGrid').innerHTML = `
+        <div class="col-span-full text-center text-slate-500 py-16">
+          <i class="fa-solid fa-layer-group text-3xl mb-2 opacity-30"></i>
+          <p class="text-xs">Step 1에서 [평가 실행]을 누르면<br>${dom.questions.length}개 기준의 후보별 확률값(0~100%)과 최적 선택값이 실시간으로 펼쳐집니다.</p>
         </div>
       `;
-      document.getElementById('actionContent').innerHTML = `
-        <div class="text-center text-slate-600 py-16">
-          <i class="fa-solid fa-landmark-flag text-3xl mb-2 opacity-30"></i>
-          <p class="text-[11px]">Jev의 확률 판단값들을 결합하여<br>사전 검증된 전자결재 공문 또는 행정처분이 완성됩니다.</p>
+
+      document.getElementById('step3Badge').innerText = "대기 중";
+      document.getElementById('step3Badge').className = "text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono";
+      document.getElementById('step3Num').className = "w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold flex items-center justify-center text-xs";
+      document.getElementById('actionDocumentContainer').innerHTML = `
+        <div class="text-center text-slate-500 py-6">
+          <i class="fa-solid fa-file-signature text-3xl mb-2 opacity-30"></i>
+          <p class="text-xs">Step 1에서 [평가 실행]을 누르면<br>Jev의 다차원 확률을 종합한 최종 행정/투자 처분서가 이곳에 완성됩니다.</p>
         </div>
       `;
-      document.getElementById('avgConfTag').innerText = "Avg Conf: --";
-      document.getElementById('finalDecisionBadge').innerText = "Awaiting";
-      document.getElementById('finalDecisionBadge').className = "text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400";
     }
 
     function cycleSample() {
       sampleIdx++;
-      renderDomainUI();
+      renderDomainData();
     }
 
     function updateCutoff(val) {
       currentCutoff = parseInt(val);
       document.getElementById('cutoffVal').innerText = `${currentCutoff}점`;
-      if (lastEvaluatedResults) {
-        renderComposedAction(currentDomain, lastEvaluatedResults);
+      if (currentEvaluatedResults) {
+        renderComposedAction(currentDomainKey, currentEvaluatedResults);
       }
     }
 
-    // --- Dispatcher Engine ---
-    async function dispatchJev() {
+    // --- Execution Engine ---
+    function runJevInference() {
       const stateText = document.getElementById('stateInput').value.trim();
-      if (!stateText) return alert("입력 본문을 작성해 주세요.");
+      if (!stateText) return alert("본문 내용을 입력해주세요.");
 
       const btn = document.getElementById('execBtn');
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-[10px]"></i> Single-Pass Parallel Evaluation...`;
-
-      const t0 = performance.now();
-      const dom = DOMAINS[currentDomain];
-
-      document.getElementById('traceStatus').innerHTML = `Evaluating ${dom.questions.length} criteria concurrently...`;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Jev 0.2초 초고속 병렬 평가 중...`;
 
       setTimeout(() => {
-        const latency = Math.floor(Math.random() * 40) + 260; // 260ms ~ 300ms
-        document.getElementById('traceLatency').innerText = `${latency}ms (Parallel Single-Pass)`;
-        document.getElementById('traceStatus').innerHTML = `<span class="text-emerald-400">200 OK</span> (${dom.questions.length} Criteria Evaluated, 0 Tokens Gen)`;
+        const latency = Math.floor(Math.random() * 30) + 270;
+        document.getElementById('latencyDisplay').innerText = `단일 패스 소요 시간: ${latency}ms (Zero Context-Rot)`;
 
-        const evaluated = computeFullDomainProbabilities(currentDomain, stateText);
-        lastEvaluatedResults = evaluated;
+        const evaluated = evaluateDomain(currentDomainKey, stateText);
+        currentEvaluatedResults = evaluated;
 
-        renderMatrixCards(evaluated);
-        renderComposedAction(currentDomain, evaluated);
+        // Render Step 2
+        renderMatrix(evaluated);
+        document.getElementById('step2Badge').innerText = `완료 (${evaluated.length}개 기준 평가됨)`;
+        document.getElementById('step2Badge').className = "text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono font-bold";
+        document.getElementById('step2Num').className = "w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-xs";
+        
+        // Render Step 3
+        renderComposedAction(currentDomainKey, evaluated);
+        document.getElementById('step3Badge').innerText = "처분 결정 완료";
+        document.getElementById('step3Badge').className = "text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono font-bold";
+        document.getElementById('step3Num').className = "w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-xs";
 
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-play text-[9px]"></i> <span id="btnText">${dom.btnLabel}</span>`;
-      }, 290);
+        btn.innerHTML = `<i class="fa-solid fa-bolt"></i> ${DOMAINS[currentDomainKey].title} 다시 평가 실행`;
+
+        // Automatically open Step 2 smoothly
+        openStep(2);
+      }, 300);
     }
 
-    // Dynamic Probability Computations for All 5 Domains
-    function computeFullDomainProbabilities(domain, text) {
+    // Mathematical Probability Evaluation
+    function evaluateDomain(domain, text) {
       const dom = DOMAINS[domain];
-      const isPositiveCase = text.includes('신청자 A') || text.includes('한국차세대') || text.includes('스타트업 A') || text.includes('지출 품의서 건 B') || text.includes('무인민원발급기');
+      const isPositive = text.includes('신청자 A') || text.includes('한국차세대') || text.includes('스타트업 A') || text.includes('품의서 건 B');
 
       return dom.questions.map((q, idx) => {
         if (q.type === 'Noul') {
-          // Invert risk logic if question is negative
-          const isNegativeQuestion = q.name.includes('부정') || q.name.includes('위반') || q.name.includes('소송') || q.name.includes('제재') || q.name.includes('심야') || q.name.includes('고발');
-          let probTrue = isPositiveCase 
-            ? (isNegativeQuestion ? 0.025 : 0.975)
-            : (isNegativeQuestion ? 0.965 : 0.045);
+          const isNegative = q.name.includes('부정') || q.name.includes('제재') || q.name.includes('위반') || q.name.includes('소송') || q.name.includes('부실') || q.name.includes('심야');
+          const pTrue = isPositive ? (isNegative ? 0.02 : 0.98) : (isNegative ? 0.96 : 0.04);
 
           return {
-            id: q.id,
-            name: q.name,
-            type: "Noul",
+            id: q.id, name: q.name, type: "Noul", weight: q.weight,
             candidates: [
-              { label: "True (충족/발생)", prob: probTrue },
-              { label: "False (미충족/미발생)", prob: (1 - probTrue) }
+              { label: "True (해당/충족)", prob: pTrue },
+              { label: "False (미해당/미충족)", prob: 1 - pTrue }
             ],
-            selected: probTrue > 0.5 ? "True (충족/발생)" : "False (미충족/미발생)",
-            noulVal: probTrue,
-            confidence: 0.96
+            selected: pTrue > 0.5 ? "True (해당/충족)" : "False (미해당/미충족)",
+            noulVal: pTrue,
+            confidence: 0.98
           };
         } else if (q.type === 'Score') {
-          let score = isPositiveCase ? (4.2 + (idx * 0.05) % 0.6) : (1.4 + (idx * 0.08) % 0.6);
+          let score = isPositive ? (4.2 + (idx * 0.06) % 0.6) : (1.4 + (idx * 0.08) % 0.6);
           score = Math.max(1.0, Math.min(5.0, score));
 
-          // Generate 5-point distribution peaked at score
-          let d = [0.05, 0.05, 0.1, 0.4, 0.4];
-          if (score < 2.5) d = [0.65, 0.25, 0.07, 0.02, 0.01];
-          else if (score >= 4.0) d = [0.01, 0.03, 0.12, 0.52, 0.32];
+          let d = score >= 4.0 ? [0.01, 0.03, 0.12, 0.54, 0.30] : [0.65, 0.25, 0.07, 0.02, 0.01];
 
           return {
-            id: q.id,
-            name: q.name,
-            type: "Score",
+            id: q.id, name: q.name, type: "Score", weight: q.weight,
             candidates: [
               { label: "1점", prob: d[0] },
               { label: "2점", prob: d[1] },
@@ -606,413 +639,153 @@
               { label: "4점", prob: d[3] },
               { label: "5점", prob: d[4] }
             ],
-            selected: score >= 4.0 ? "4점" : (score < 2.5 ? "1점" : "3점"),
+            selected: score >= 4.0 ? "4점" : "1점",
             scoreVal: score,
-            confidence: 0.92
+            confidence: 0.93
           };
         } else if (q.type === 'Choice') {
           const opts = q.options;
-          let p0 = isPositiveCase ? 0.91 : 0.05;
-          let p1 = isPositiveCase ? 0.07 : 0.15;
-          let p2 = isPositiveCase ? 0.02 : 0.80;
+          const p0 = isPositive ? 0.92 : 0.04;
+          const p1 = isPositive ? 0.06 : 0.14;
+          const p2 = isPositive ? 0.02 : 0.82;
 
           return {
-            id: q.id,
-            name: q.name,
-            type: "Choice",
+            id: q.id, name: q.name, type: "Choice", weight: q.weight,
             candidates: [
               { label: opts[0], prob: p0 },
               { label: opts[1], prob: p1 },
               { label: opts[2] || "기타", prob: p2 }
             ],
-            selected: isPositiveCase ? opts[0] : (opts[2] || opts[1]),
-            confidence: isPositiveCase ? p0 : p2
+            selected: isPositive ? opts[0] : (opts[2] || opts[1]),
+            confidence: isPositive ? p0 : p2
           };
         }
       });
     }
 
-    // Render Matrix Grid
-    function renderMatrixCards(list) {
-      const container = document.getElementById('matrixContainer');
-      let totalConf = 0;
-
-      let html = list.map((item, idx) => {
-        totalConf += item.confidence;
-        return `
-          <div class="bg-bgDark p-3 rounded border border-borderDark/80 flex flex-col justify-between hover:border-slate-700 transition">
-            <div class="flex justify-between items-start mb-2">
-              <div>
-                <span class="text-[9px] font-mono text-slate-500 font-bold">CRITERIA #${idx+1}</span>
-                <div class="text-[11px] font-bold text-slate-200 truncate max-w-[210px]">${item.name}</div>
-              </div>
-              <span class="text-[9px] font-mono px-1 py-0.5 rounded ${
+    // Render Roomy, Readable Matrix Cards
+    function renderMatrix(list) {
+      const container = document.getElementById('matrixGrid');
+      container.innerHTML = list.map((item, idx) => `
+        <div class="bg-bgDark p-4 rounded-xl border border-borderDark/80 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-mono font-bold text-accentSky">#0${idx+1}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full ${
                 item.type === 'Noul' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                 item.type === 'Score' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
                 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
               }">${item.type}</span>
             </div>
+            <h4 class="text-xs md:text-sm font-bold text-slate-100 mb-3">${item.name}</h4>
 
-            <!-- Candidate Probabilities Distribution Bars -->
-            <div class="space-y-1.5 my-1.5">
+            <!-- Candidates Distribution Bars -->
+            <div class="space-y-2 mb-3">
               ${item.candidates.map(c => {
-                const isSelected = c.label === item.selected;
+                const isSel = c.label === item.selected;
                 const pct = (c.prob * 100).toFixed(1);
                 return `
                   <div>
-                    <div class="flex justify-between text-[10px] mb-0.5 ${isSelected ? 'text-slate-100 font-bold' : 'text-slate-500'}">
-                      <span class="flex items-center gap-1">
-                        ${isSelected ? '<i class="fa-solid fa-caret-right text-accentSky text-[9px]"></i>' : ''}
+                    <div class="flex justify-between text-xs mb-1 ${isSel ? 'text-white font-bold' : 'text-slate-500'}">
+                      <span class="flex items-center gap-1.5">
+                        ${isSel ? '<i class="fa-solid fa-check text-accentSky text-xs"></i>' : '<span class="w-2.5 inline-block"></span>'}
                         <span>${c.label}</span>
                       </span>
-                      <span class="font-mono ${isSelected ? 'text-accentSky' : ''}">${pct}%</span>
+                      <span class="font-mono ${isSel ? 'text-accentSky' : ''}">${pct}%</span>
                     </div>
-                    <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                    <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
                       <div style="--target-w: ${pct}%; width: ${pct}%" 
-                           class="h-full rounded-full prob-bar ${isSelected ? 'bg-accentSky' : 'bg-slate-700'}"></div>
+                           class="h-full rounded-full prob-bar ${isSel ? 'bg-accentSky' : 'bg-slate-800'}"></div>
                     </div>
                   </div>
                 `;
               }).join('')}
             </div>
-
-            <!-- Selected Candidate Badge -->
-            <div class="border-t border-borderDark/60 pt-2 mt-2 flex justify-between items-center text-[10px] font-mono">
-              <span class="text-slate-500">Selected: <strong class="text-slate-200">${item.selected}</strong></span>
-              <span class="text-slate-400">Conf: ${(item.confidence*100).toFixed(0)}%</span>
-            </div>
           </div>
-        `;
-      }).join('');
 
-      container.innerHTML = html;
-      const avg = Math.round((totalConf / list.length) * 100);
-      document.getElementById('avgConfTag').innerText = `Avg Conf: ${avg}%`;
+          <!-- Bottom Selection Tag -->
+          <div class="border-t border-borderDark/60 pt-2.5 flex justify-between items-center text-xs font-mono">
+            <span class="text-slate-400">최적 선택: <strong class="text-slate-100">${item.selected}</strong></span>
+            <span class="text-slate-500">확신도: ${(item.confidence*100).toFixed(0)}%</span>
+          </div>
+        </div>
+      `).join('');
     }
 
-    // Composed Action Decision using Developer's Code Logic
+    // Render Step 3 Action Result
     function renderComposedAction(domain, list) {
-      const container = document.getElementById('actionContent');
-      const badge = document.getElementById('finalDecisionBadge');
+      const container = document.getElementById('actionDocumentContainer');
+      let score = 0;
 
-      let totalScore = 0;
+      // Calculate Total Score using Developer's Formula
+      list.forEach(item => {
+        if (item.type === 'Noul') {
+          score += (item.noulVal * item.weight);
+        } else if (item.type === 'Score') {
+          score += ((item.scoreVal / 5) * item.weight);
+        } else if (item.type === 'Choice') {
+          const isTop = item.selected === item.candidates[0].label;
+          score += (isTop ? item.weight : 0);
+        }
+      });
+
+      score = Math.max(0, Math.min(100, score));
+      const isPassed = score >= currentCutoff;
+
+      let title = "", summary = "", actionType = "";
 
       if (domain === 'welfare') {
-        // 복지 수급 적격 환산 점수
-        totalScore += (list[0].noulVal * 20); // 소득 인정액 (20)
-        totalScore += (list[1].noulVal * 15); // 재산 기준 (15)
-        totalScore += (list[2].selected.includes('적격') ? 10 : 0); // 차량 (10)
-        totalScore += (list[3].noulVal * 15); // 부양의무자 (15)
-        totalScore += (list[4].scoreVal * 3);  // 주거 취약도 (15)
-        totalScore += (list[5].scoreVal * 2);  // 미성년 돌봄 가점 (10)
-        totalScore -= (list[6].noulVal * 30); // 부정수급 감점 (-30)
-        totalScore += (list[7].selected.includes('중복 없음') ? 10 : 0); // 중복수급
-        totalScore += (list[8].scoreVal * 3);  // 긴급성 (15)
-        totalScore += (list[9].noulVal * 5);  // 서류 완비 (5)
-
-        totalScore = Math.max(0, Math.min(100, totalScore));
-        const isPassed = totalScore >= currentCutoff;
-
-        badge.className = isPassed 
-          ? "text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold"
-          : "text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold";
-        badge.innerText = isPassed ? `수급 적격 승인 (${totalScore.toFixed(1)}점)` : `수급 반려/소명 요구 (${totalScore.toFixed(1)}점)`;
-
-        container.innerHTML = `
-          <div class="bg-bgDark border ${isPassed ? 'border-emerald-500/30' : 'border-rose-500/30'} rounded p-3.5 text-left flex flex-col justify-between h-full">
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono border-b border-borderDark pb-2">
-                <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold">
-                  <i class="fa-solid fa-landmark"></i> 보건복지부 행복e음 전산 연동
-                </span>
-                <span>CASE #WF-2026-094</span>
-              </div>
-              
-              <div class="text-xs font-bold text-slate-100">
-                ${isPassed 
-                  ? '긴급 복지 생계비 1차 급여 즉시 지급 전자결재 기안 자동 생성' 
-                  : '복지 수급 부적격 통보 및 14일 소명 기회 통지서 서식 발행'}
-              </div>
-
-              <div class="p-2.5 bg-slate-900/90 rounded border border-borderDark text-[11px] space-y-1.5 text-slate-300 font-mono">
-                <div><strong>법정 요건 환산점:</strong> <span class="${isPassed ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'} text-xs">${totalScore.toFixed(1)}점</span> / 커트라인 ${currentCutoff}점</div>
-                <div><strong>소득 기준 충족(Noul):</strong> ${(list[0].noulVal*100).toFixed(1)}%</div>
-                <div><strong>부정수급 리스크:</strong> ${(list[6].noulVal*100).toFixed(1)}%</div>
-                <div><strong>감사원 증적:</strong> 10개 법령 조항별 전산 로그 100% 보존 완료</div>
-              </div>
-            </div>
-
-            <div class="pt-2 text-[10px] text-slate-500 flex justify-between items-center font-mono">
-              <span>행정처분: 법령 템플릿 기반 (환각 0%)</span>
-              <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isPassed ? '전자결재 상신' : '보류 통지'}</span>
-            </div>
-          </div>
-        `;
+        title = isPassed ? "긴급복지 생계비 1차 지급 전자결재 기안 자동 생성" : "복지 수급 부적격 판정 및 14일 소명 기회 통지서 발행";
+        summary = isPassed ? "소득 인정액 중위소득 32% 충족 및 부정수급 리스크 2% 미만 판정에 따라 즉시 전산 지급 기안 완료." : "재산 과세표준 상한 초과 및 부정수급 환수 이력 감점에 따라 법정 기준치 미달.";
+        actionType = isPassed ? "행복e음 전산 즉시 지급" : "소명 안내문 우편 발송";
       } else if (domain === 'rnd') {
-        // 공공 R&D 조달 심사
-        totalScore += (list[0].selected.includes('TRL 7') ? 20 : 5);
-        totalScore += (list[1].noulVal * 15);
-        totalScore += (list[2].scoreVal * 3);
-        totalScore -= (list[3].noulVal * 30); // 자본잠식 감점
-        totalScore -= (list[4].noulVal * 35); // 참여제한 감점
-        totalScore += (list[5].scoreVal * 2);
-        totalScore += (list[6].scoreVal * 2);
-        totalScore -= (list[7].noulVal * 20); // 하도급 위반 감점
-        totalScore += (list[8].selected.includes('인증 완료') ? 15 : 2);
-        totalScore += (list[9].scoreVal * 2);
-
-        totalScore = Math.max(0, Math.min(100, totalScore));
-        const isPassed = totalScore >= currentCutoff;
-
-        badge.className = isPassed 
-          ? "text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold"
-          : "text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold";
-        badge.innerText = isPassed ? `조달 적격 승인 (${totalScore.toFixed(1)}점)` : `조달 입찰 부적격 (${totalScore.toFixed(1)}점)`;
-
-        container.innerHTML = `
-          <div class="bg-bgDark border ${isPassed ? 'border-emerald-500/30' : 'border-rose-500/30'} rounded p-3.5 text-left flex flex-col justify-between h-full">
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono border-b border-borderDark pb-2">
-                <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold">
-                  <i class="fa-solid fa-award"></i> 나라장터 / 국가R&D 평가원
-                </span>
-                <span>BID #RND-2026-551</span>
-              </div>
-              
-              <div class="text-xs font-bold text-slate-100">
-                ${isPassed 
-                  ? '기술성 평가 합격 및 차순위 가격개찰 평가 대상 선정' 
-                  : '조달 적격 심사 탈락 (부적격 사유 조항 명시 통보서 자동 발송)'}
-              </div>
-
-              <div class="p-2.5 bg-slate-900/90 rounded border border-borderDark text-[11px] space-y-1.5 text-slate-300 font-mono">
-                <div><strong>조달 적격 총점:</strong> <span class="${isPassed ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'} text-xs">${totalScore.toFixed(1)}점</span> / 기준선 ${currentCutoff}점</div>
-                <div><strong>TRL 기술 성숙도:</strong> ${list[0].selected}</div>
-                <div><strong>참여제한 리스크:</strong> ${(list[4].noulVal*100).toFixed(1)}%</div>
-                <div><strong>공인성적서 구비(Noul):</strong> ${(list[1].noulVal*100).toFixed(1)}%</div>
-              </div>
-            </div>
-
-            <div class="pt-2 text-[10px] text-slate-500 flex justify-between items-center font-mono">
-              <span>조달청 심사 감사 규정 100% 준수</span>
-              <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isPassed ? '가격 개찰 진행' : '탈락 통지'}</span>
-            </div>
-          </div>
-        `;
-      } else if (domain === 'massive') {
-        // 스타트업 12개 기준
-        totalScore += (list[0].scoreVal * 3.5);
-        totalScore += (list[1].scoreVal * 4.0);
-        totalScore += (list[2].noulVal * 15.0);
-        totalScore += (list[3].selected.includes('우수') ? 15.0 : 5.0);
-        totalScore += (list[4].scoreVal * 2.5);
-        totalScore -= (list[5].noulVal * 25.0);
-        totalScore += (list[6].selected.includes('수익성') ? 10.0 : 2.0);
-        totalScore += (list[7].noulVal * 5.0);
-        totalScore += (list[8].scoreVal * 2.0);
-        totalScore += (list[9].selected.includes('높음') ? 8.0 : 2.0);
-        totalScore += (list[10].noulVal * 8.0);
-        totalScore += (list[11].scoreVal * 2.0);
-
-        totalScore = Math.max(0, Math.min(100, totalScore));
-        const isPassed = totalScore >= currentCutoff;
-
-        badge.className = isPassed 
-          ? "text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold"
-          : "text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold";
-        badge.innerText = isPassed ? `INVEST_APPROVED (${totalScore.toFixed(1)}점)` : `INVEST_REJECTED (${totalScore.toFixed(1)}점)`;
-
-        container.innerHTML = `
-          <div class="bg-bgDark border ${isPassed ? 'border-emerald-500/30' : 'border-rose-500/30'} rounded p-3.5 text-left flex flex-col justify-between h-full">
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono border-b border-borderDark pb-2">
-                <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold">
-                  <i class="fa-solid fa-gavel"></i> INVESTMENT COMMITTEE ENGINE
-                </span>
-                <span>DEAL #ST-2026-88</span>
-              </div>
-              <div class="text-xs font-bold text-slate-100">
-                ${isPassed ? 'IR 투자심의위원회 안건 자동 상정 및 Term Sheet 초안 발송' : '투자 부적격 판정 — 사유별 분석 안내서 자동 생성'}
-              </div>
-              <div class="p-2.5 bg-slate-900/90 rounded border border-borderDark text-[11px] space-y-1.5 text-slate-300 font-mono">
-                <div><strong>환산 총점:</strong> <span class="${isPassed ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'} text-xs">${totalScore.toFixed(1)}점</span> / 기준선 ${currentCutoff}점</div>
-                <div><strong>소송 리스크(Noul):</strong> ${(list[5].noulVal*100).toFixed(1)}%</div>
-                <div><strong>리텐션(NDR):</strong> ${list[3].selected}</div>
-              </div>
-            </div>
-            <div class="pt-2 text-[10px] text-slate-500 flex justify-between items-center font-mono">
-              <span>Code Execution: 100% Deterministic</span>
-              <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isPassed ? 'PROCEED' : 'ARCHIVE'}</span>
-            </div>
-          </div>
-        `;
+        title = isPassed ? "공공 조달 기술성 평가 합격 및 가격 개찰 대상 선정" : "조달 적격 심사 탈락 통보서 자동 발송";
+        summary = isPassed ? "TRL 7단계 상용화 및 공인 시험성적서 적격, 참여제한 이력 무에 따라 적격 통과." : "자본잠식률 65% 부실 및 동종 분야 납품 실적 부재로 조달 감사 지침상 부적격.";
+        actionType = isPassed ? "나라장터 가격 개찰" : "입찰 탈락 통지";
+      } else if (domain === 'startup') {
+        title = isPassed ? "IR 투자심의위원회 안건 자동 상정 및 Term Sheet 초안 발송" : "투자 부적격(Unqualified) 판정 — 사유별 리포트 생성";
+        summary = isPassed ? "eBPF 원천 기술 해자 및 NDR 135% 건전성에 따라 투자 심의 패스트트랙 회부." : "지식재산권 소송 리스크 96% 및 3개월 내 런웨이 고갈 위험으로 심사 반려.";
+        actionType = isPassed ? "투심위 안건 상정" : "투자 검토 종결";
       } else if (domain === 'audit') {
-        const isViolation = list[0].noulVal > 0.5 || list[1].noulVal > 0.5 || list[3].noulVal > 0.5;
-        badge.className = isViolation 
-          ? "text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold"
-          : "text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold";
-        badge.innerText = isViolation ? "AUDIT_REJECTED (감사 적발)" : "AUTO_APPROVED (정상 집행)";
-
-        container.innerHTML = `
-          <div class="bg-bgDark border ${isViolation ? 'border-rose-500/30' : 'border-borderDark'} rounded p-3.5 text-left flex flex-col justify-between h-full">
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono border-b border-borderDark pb-2">
-                <span class="${isViolation ? 'text-rose-400' : 'text-emerald-400'} font-bold">
-                  <i class="fa-solid fa-receipt"></i> ERP & D-Brain 공공예산 감사 게이트웨이
-                </span>
-                <span>AUDIT #EXP-2026-904</span>
-              </div>
-              <div class="text-xs font-bold text-slate-100">
-                ${isViolation ? '예산 집행 자동 반려 및 소명서 제출 명령서 발행' : '클린카드 회계 전표 자동 승인 (패스트트랙)'}
-              </div>
-              <div class="p-2.5 bg-slate-900/90 rounded border border-borderDark text-[11px] space-y-1.5 text-slate-300 font-mono">
-                <div><strong>심야 제한시간 위반:</strong> ${(list[0].noulVal*100).toFixed(1)}%</div>
-                <div><strong>클린카드 제한업종 위반:</strong> ${(list[1].noulVal*100).toFixed(1)}%</div>
-                <div><strong>원거리 출장지 결제 의심:</strong> ${(list[3].noulVal*100).toFixed(1)}%</div>
-              </div>
-            </div>
-            <div class="pt-2 text-[10px] text-slate-500 flex justify-between items-center font-mono">
-              <span>ERP Status: ${isViolation ? 'BLOCKED' : 'APPROVED'}</span>
-              <span class="${isViolation ? 'text-rose-400' : 'text-emerald-400'} font-bold">${isViolation ? '감사 통보' : '승인 완료'}</span>
-            </div>
-          </div>
-        `;
-      } else if (domain === 'cs') {
-        const isCritical = list[0].noulVal > 0.5 || list[1].noulVal > 0.5;
-        badge.className = isCritical 
-          ? "text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold"
-          : "text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 font-bold";
-        badge.innerText = isCritical ? "CRITICAL_ESCALATION" : "STANDARD_DISPATCH";
-
-        container.innerHTML = `
-          <div class="bg-bgDark border ${isCritical ? 'border-rose-500/30' : 'border-borderDark'} rounded p-3.5 text-left flex flex-col justify-between h-full">
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono border-b border-borderDark pb-2">
-                <span class="${isCritical ? 'text-rose-400' : 'text-sky-400'} font-bold">
-                  <i class="fa-solid fa-headset"></i> 국민신문고 / 민원 인박스 자동 분류기
-                </span>
-                <span>TICKET #MIN-2026-441</span>
-              </div>
-              <div class="text-xs font-bold text-slate-100">
-                ${isCritical ? '고위험 고발 예고 민원 -> 감사관실 법무팀 핫라인 에스컬레이션' : '일반 정보 안내 자동 처리 대기열'}
-              </div>
-              <div class="p-2.5 bg-slate-900/90 rounded border border-borderDark text-[11px] space-y-1.5 text-slate-300 font-mono">
-                <div><strong>형사/감사 고발 리스크(Noul):</strong> ${(list[0].noulVal*100).toFixed(1)}%</div>
-                <div><strong>언론 제보 위험(Noul):</strong> ${(list[1].noulVal*100).toFixed(1)}%</div>
-                <div><strong>배정 주무부서:</strong> ${list[3].selected}</div>
-              </div>
-            </div>
-            <div class="pt-2 text-[10px] text-slate-500 flex justify-between items-center font-mono">
-              <span>Action: ${isCritical ? '비상 알림 발송됨' : '자동 FAQ 발송됨'}</span>
-              <span class="${isCritical ? 'text-rose-400' : 'text-sky-400'} font-bold">${isCritical ? '전담 대응' : '완료'}</span>
-            </div>
-          </div>
-        `;
+        title = isPassed ? "클린카드 회계 전표 자동 승인 (패스트트랙)" : "예산 집행 자동 반려 및 소명서 제출 명령서 발행";
+        summary = isPassed ? "청사 관내 집행 및 회의록 완비로 감사원 지침 100% 충족." : "심야 23시 이후 관외 120km 유흥주점 68만원 결제로 사규 및 공공지침 정면 위반 적발.";
+        actionType = isPassed ? "ERP 전표 번호 부여" : "감사관실 즉시 이관";
       }
+
+      container.innerHTML = `
+        <div class="border ${isPassed ? 'border-emerald-500/40 bg-emerald-950/20' : 'border-rose-500/40 bg-rose-950/20'} rounded-xl p-5 flex flex-col gap-3">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-borderDark/60 pb-3">
+            <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold flex items-center gap-1.5 text-xs">
+              <i class="fa-solid ${isPassed ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i>
+              <span>${isPassed ? '심사 통과 (PASSED)' : '심사 반려 (REJECTED)'}</span>
+            </span>
+            <span class="text-xs font-mono font-bold ${isPassed ? 'text-emerald-400' : 'text-rose-400'}">
+              환산 종합 점수: ${score.toFixed(1)}점 / 커트라인 ${currentCutoff}점
+            </span>
+          </div>
+
+          <div>
+            <h3 class="text-base font-bold text-white mb-1.5">${title}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">${summary}</p>
+          </div>
+
+          <div class="pt-3 border-t border-borderDark/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs font-mono">
+            <span class="text-slate-400">집행 방식: 사전 법무 검증 템플릿 (환각 0%)</span>
+            <span class="px-3 py-1 rounded-lg ${isPassed ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} font-bold">
+              ${actionType}
+            </span>
+          </div>
+        </div>
+      `;
     }
 
-    // Q&A Modal Controller
-    function openQnAModal() {
-      document.getElementById('qnaModal').classList.remove('hidden');
-    }
-    function closeQnAModal() {
-      document.getElementById('qnaModal').classList.add('hidden');
-    }
+    // Modal
+    function openQnAModal() { document.getElementById('qnaModal').classList.remove('hidden'); }
+    function closeQnAModal() { document.getElementById('qnaModal').classList.add('hidden'); }
 
-    // Auto-detect secret on load
     window.onload = () => {
-      setDomain('welfare');
-      const keyVal = document.getElementById('apiKey').value;
-      if (keyVal && !keyVal.includes('__DEFAULT_')) {
-        document.getElementById('connStatus').className = "text-[10px] px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono font-bold flex items-center gap-1.5";
-        document.getElementById('connStatus').innerHTML = '<i class="fa-solid fa-check text-[9px]"></i> GitHub Secret Active';
-      }
+      switchDomain('welfare');
     };
   </script>
-
-  <!-- Q&A Explanatory Modal (왜 Jev인가? 핵심 질문 해소) -->
-  <div id="qnaModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surfaceDark border border-borderDark rounded-xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
-      
-      <!-- Modal Header -->
-      <div class="p-4 border-b border-borderDark flex justify-between items-center bg-surfaceElevated">
-        <div class="flex items-center gap-2.5">
-          <span class="p-1.5 rounded bg-accentSky/10 border border-accentSky/20 text-accentSky text-sm">
-            <i class="fa-solid fa-brain"></i>
-          </span>
-          <div>
-            <h3 class="text-sm font-bold text-slate-100">핵심 기술 Q&A: 왜 Jev인가?</h3>
-            <p class="text-[10px] text-slate-400">엔지니어와 의사결정자가 가장 많이 던지는 2가지 날카로운 질문과 해답</p>
-          </div>
-        </div>
-        <button onclick="closeQnAModal()" class="text-slate-400 hover:text-slate-200 text-base p-1">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <!-- Modal Body (Questions & Answers) -->
-      <div class="p-5 overflow-y-auto space-y-4 text-xs leading-relaxed">
-
-        <!-- Question 1 -->
-        <div class="bg-bgDark border border-borderDark rounded-lg p-4 space-y-2">
-          <div class="flex items-start gap-2 text-accentAmber font-bold text-[12px]">
-            <span class="text-xs mt-0.5">Q1.</span>
-            <span>"어차피 사람에게 보낼 답변은 LLM이 다시 써야 하는 거 아닌가요? 그런데 이게 왜 혁신인가요?"</span>
-          </div>
-          <div class="text-slate-300 text-[11px] pl-4 space-y-2 border-l border-borderDark ml-1">
-            <p>
-              <strong>답변:</strong> 실제 엔터프라이즈와 공공 행정 시스템이 원하는 것은 <strong>"장황한 에세이"</strong>가 아니라 <strong>"결정(Decision)과 시스템 트랜잭션"</strong>이기 때문입니다.
-            </p>
-            <ul class="list-disc list-inside space-y-1 text-slate-400">
-              <li><strong>90%의 업무는 글이 필요 없습니다:</strong> 은행 대출 승인, 쿠팡 물류 라우팅, 복지비 전산 입금, 이상금융거래 차단은 글을 읽는 것이 아니라 <strong>즉시 DB 업데이트와 API를 호출</strong>해야 합니다.</li>
-              <li><strong>글이 필요해도 LLM이 쓰면 안 됩니다:</strong> LLM에게 매번 글을 쓰게 하면 엉뚱한 규정을 지어내는 <strong>환각(말실수)</strong>이 생깁니다. 법무팀이 100% 검증한 <strong>공식 템플릿</strong>에 결과 수치만 주입하는 것이 100배 안전하고 법적 책임이 없습니다.</li>
-              <li><strong>비즈니스 통제권의 회복:</strong> "합격 기준을 5% 강화하자"고 할 때 프롬프트를 고치면 LLM 성격이 뒤죽박죽됩니다. Jev는 프롬프트 수정 없이 <strong>백엔드 코드의 숫자(<code class="text-accentSky">if score >= 80</code>)</strong>만 바꾸면 즉시 완벽하게 제어됩니다.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Question 2 -->
-        <div class="bg-bgDark border border-borderDark rounded-lg p-4 space-y-2">
-          <div class="flex items-start gap-2 text-accentSky font-bold text-[12px]">
-            <span class="text-xs mt-0.5">Q2.</span>
-            <span>"판단을 잘하려면 모델 체급이 좋아야 하지 않나요? 모델이 멍청하면 정량 판단도 결국 환각이 생기는 거 아닌가요?"</span>
-          </div>
-          <div class="text-slate-300 text-[11px] pl-4 space-y-2 border-l border-borderDark ml-1">
-            <p>
-              <strong>답변:</strong> 지적하신 대로 모델의 기본 독해력과 지식 체급은 매우 중요합니다. 하지만 <strong>기존 LLM과 Jev는 거짓말(환각)의 구조가 완전히 다릅니다.</strong>
-            </p>
-            <ul class="list-disc list-inside space-y-1 text-slate-400">
-              <li><strong>스토리텔링형 환각의 원천 차단:</strong> 기존 LLM은 단어를 이어 쓰다가 맥락을 지어내어 없는 판례나 법 조항을 날조합니다. Jev는 글을 일절 쓰지 않고 <strong>주어진 서류(State)라는 팩트 경계선 안에서만 확률을 측정</strong>하므로 문장 창작형 환각이 원천 차단됩니다.</li>
-              <li><strong>모를 땐 솔직하게 헷갈린다고 자백함 (Confidence):</strong> 기존 LLM은 자기가 틀렸을 때도 100% 확신하는 척 사기를 칩니다. 반면 Jev는 정보가 부족하면 <strong>확률이 50:50으로 갈라지며 확신도(Confidence)가 바닥</strong>을 칩니다.</li>
-              <li><strong>인간 심사역 호출 안전장치:</strong> 코드가 <code class="text-accentRose">if (confidence < 0.7)</code>을 감지하면 즉시 <strong>"AI 자동 판단을 중단하고 사람 심사관에게 이관"</strong>하므로 시스템 폭망을 사전에 100% 차단할 수 있습니다.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Bonus Question 3 -->
-        <div class="bg-bgDark border border-borderDark rounded-lg p-4 space-y-2">
-          <div class="flex items-start gap-2 text-emerald-400 font-bold text-[12px]">
-            <span class="text-xs mt-0.5">Q3.</span>
-            <span>"기존 LLM의 JSON Mode로 {score: 4} 이렇게 뽑는 것과 Jev는 뭐가 다른가요?"</span>
-          </div>
-          <div class="text-slate-300 text-[11px] pl-4 space-y-2 border-l border-borderDark ml-1">
-            <p class="text-slate-400">
-              기존 LLM은 질문 10개를 주면 <strong>앞 질문의 점수가 뒤 질문에 영향을 주는 후광 효과(컨텍스트 오염)</strong>가 생기고 10초 이상 걸립니다. 반면 Jev는 10~20개 질문을 <strong>100% 독립적으로 단 280ms 만에 병렬 평가</strong>하며, 달랑 숫자 하나가 아니라 <strong>1점부터 5점까지의 전체 확률 분포(Softmax)</strong>를 모두 넘겨주므로 소수점 단위 정렬(Sort)과 통계 분석이 가능합니다.
-            </p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="p-3 border-t border-borderDark bg-surfaceElevated flex justify-between items-center text-[10px] text-slate-500 font-mono">
-        <span>TypeSafe Jev Architectural Whitepaper Grounded</span>
-        <button onclick="closeQnAModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded font-sans font-bold text-xs">
-          닫기 (Close)
-        </button>
-      </div>
-
-    </div>
-  </div>
 </body>
 </html>
