@@ -31,7 +31,14 @@
     }
   </script>
   <style>
-    body { background-color: #0a0e17; color: #f1f5f9; font-family: Pretendard, sans-serif; }
+    body { background-color: #0a0e17; color: #f1f5f9; font-family: Pretendard, sans-serif; overflow-x: hidden; }
+    html { overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0e17; }
+    ::-webkit-scrollbar-thumb { background: #1e2942; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .accordion-content { transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, padding 0.3s ease; }
     .accordion-open { max-height: 3000px; opacity: 1; pointer-events: auto; }
     .accordion-closed { max-height: 0; opacity: 0; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; pointer-events: none; }
@@ -39,13 +46,13 @@
       from { width: 0%; }
       to { width: var(--target-w); }
     }
-    .bar-anim { animation: barFill 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .bar-anim { animation: barFill 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
 <body class="min-h-screen antialiased flex flex-col selection:bg-sky-500/30">
 
   <!-- ============================================================ -->
-  <!-- 1. TOP GLOBAL NAVIGATION (간결하고 깨끗한 헤더) -->
+  <!-- 1. TOP GLOBAL NAVIGATION -->
   <!-- ============================================================ -->
   <header class="border-b border-borderLight bg-cardDark/90 backdrop-blur sticky top-0 z-50 py-3.5 px-4 md:px-8">
     <div class="max-w-5xl mx-auto flex justify-between items-center">
@@ -61,7 +68,7 @@
 
       <div class="flex items-center gap-3">
         <span class="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold flex items-center gap-1.5">
-          <i class="fa-solid fa-check"></i> 실시간 캘리브레이션 작동 중
+          <i class="fa-solid fa-check"></i> 실시간 캘리브레이션 활성
         </span>
         <input id="apiKey" type="hidden" value="__DEFAULT_OPENROUTER_KEY__" />
       </div>
@@ -69,12 +76,12 @@
   </header>
 
   <!-- ============================================================ -->
-  <!-- 2. HERO & 핵심 의문 즉시 해소 (눈에 확 들어오는 Q&A 아코디언) -->
+  <!-- 2. HERO & 핵심 쟁점 Q&A (전면 배치 대형 카드) -->
   <!-- ============================================================ -->
   <section class="border-b border-borderLight bg-gradient-to-b from-cardDark via-brandDark to-brandDark pt-8 pb-10 px-4 md:px-8">
     <div class="max-w-5xl mx-auto flex flex-col gap-6">
       
-      <!-- Hero Headline -->
+      <!-- Headline -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
         <span class="text-xs font-bold uppercase tracking-widest text-brandBlue bg-brandBlue/10 px-3 py-1 rounded-full border border-brandBlue/20">
           Next-Generation Architecture
@@ -88,14 +95,14 @@
         </p>
       </div>
 
-      <!-- 눈에 확 들어오는 Q&A 카드 2개 (전면 배치 아코디언) -->
+      <!-- Q&A 2-Card Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
         
         <!-- Q1 Card -->
         <div class="bg-cardElevated/80 border border-borderLight rounded-2xl p-5 flex flex-col justify-between shadow-lg hover:border-slate-500 transition">
           <div class="space-y-2.5">
             <div class="flex items-center gap-2 text-brandAmber font-bold text-sm md:text-base">
-              <i class="fa-solid fa-circle-question text-base"></i>
+              <i class="fa-solid fa-circle-question text-base shrink-0"></i>
               <span>Q1. 어차피 LLM이 글을 써야 하지 않나요? 왜 혁신이죠?</span>
             </div>
             <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
@@ -113,7 +120,7 @@
         <div class="bg-cardElevated/80 border border-borderLight rounded-2xl p-5 flex flex-col justify-between shadow-lg hover:border-slate-500 transition">
           <div class="space-y-2.5">
             <div class="flex items-center gap-2 text-brandBlue font-bold text-sm md:text-base">
-              <i class="fa-solid fa-shield-halved text-base"></i>
+              <i class="fa-solid fa-shield-halved text-base shrink-0"></i>
               <span>Q2. 모델이 멍청하면 정량 판단도 결국 환각 아닌가요?</span>
             </div>
             <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
@@ -133,25 +140,26 @@
   </section>
 
   <!-- ============================================================ -->
-  <!-- 3. DOMAIN SELECTOR TABS (시원한 탭 버튼) -->
+  <!-- 3. DOMAIN SELECTOR TABS (스크롤바 없이 깔끔한 래핑 탭 바) -->
   <!-- ============================================================ -->
-  <div class="border-b border-borderLight bg-cardDark px-4 py-3">
-    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-        <i class="fa-solid fa-folder-tree text-brandBlue"></i> 심사 도메인 선택:
-      </span>
-      <div class="flex gap-2 overflow-x-auto w-full sm:w-auto no-scrollbar pb-1 sm:pb-0">
-        <button onclick="switchDomain('welfare')" id="tab-welfare" class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-brandBlue text-slate-950 transition flex items-center gap-2 shrink-0 shadow">
-          <i class="fa-solid fa-landmark"></i> 🏛️ 공공 복지 수급 심사 (10대 기준)
+  <div class="border-b border-borderLight bg-cardDark px-4 py-3.5">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+      <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0">
+        <i class="fa-solid fa-layer-group text-brandBlue"></i>
+        <span>심사 도메인:</span>
+      </div>
+      <div class="flex flex-wrap gap-2 w-full md:w-auto">
+        <button onclick="switchDomain('welfare')" id="tab-welfare" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold bg-brandBlue text-slate-950 transition flex items-center gap-2 shadow">
+          <i class="fa-solid fa-landmark"></i> 공공 복지 수급 심사 (10대 기준)
         </button>
-        <button onclick="switchDomain('rnd')" id="tab-rnd" class="px-4 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2 shrink-0">
-          <i class="fa-solid fa-award"></i> 🏛️ 공공 조달 입찰 (10대 기준)
+        <button onclick="switchDomain('rnd')" id="tab-rnd" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2">
+          <i class="fa-solid fa-award"></i> 공공 조달 입찰 (10대 기준)
         </button>
-        <button onclick="switchDomain('startup')" id="tab-startup" class="px-4 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2 shrink-0">
-          <i class="fa-solid fa-rocket"></i> 💼 스타트업 투자 (12대 지표)
+        <button onclick="switchDomain('startup')" id="tab-startup" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2">
+          <i class="fa-solid fa-rocket"></i> 스타트업 투자 (12대 지표)
         </button>
-        <button onclick="switchDomain('audit')" id="tab-audit" class="px-4 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2 shrink-0">
-          <i class="fa-solid fa-receipt"></i> ⚖️ 공공 예산 감사 (8대 기준)
+        <button onclick="switchDomain('audit')" id="tab-audit" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2">
+          <i class="fa-solid fa-receipt"></i> 공공 예산 감사 (8대 기준)
         </button>
       </div>
     </div>
@@ -168,7 +176,7 @@
     <div class="bg-cardDark border border-borderLight rounded-2xl overflow-hidden shadow-xl">
       <button onclick="toggleAccordion(1)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-cardElevated/40 transition">
         <div class="flex items-center gap-4">
-          <span class="w-9 h-9 rounded-2xl bg-brandBlue text-slate-950 font-black flex items-center justify-center text-sm shadow-md">
+          <span class="w-9 h-9 rounded-2xl bg-brandBlue text-slate-950 font-black flex items-center justify-center text-sm shadow-md shrink-0">
             1
           </span>
           <div>
@@ -205,7 +213,7 @@
           </div>
         </div>
 
-        <!-- Run Trigger Button (Big & Prominent) -->
+        <!-- Run Trigger Button -->
         <button onclick="executeJev()" id="runBtn" 
                 class="w-full bg-brandBlue hover:bg-sky-300 text-slate-950 font-black py-4 px-6 rounded-xl text-sm md:text-base transition flex items-center justify-center gap-2.5 shadow-lg shadow-sky-500/25 active:scale-[0.99] mt-2">
           <i class="fa-solid fa-bolt text-base"></i>
@@ -220,7 +228,7 @@
     <div class="bg-cardDark border border-borderLight rounded-2xl overflow-hidden shadow-xl">
       <button onclick="toggleAccordion(2)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-cardElevated/40 transition">
         <div class="flex items-center gap-4">
-          <span id="step2Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm">
+          <span id="step2Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0">
             2
           </span>
           <div>
@@ -247,7 +255,7 @@
           <span id="latencyTag" class="font-mono text-emerald-400 font-bold">소요 시간: -- ms</span>
         </div>
 
-        <!-- 2-Column Matrix Cards Grid (Spacious & Clean) -->
+        <!-- 2-Column Matrix Cards Grid -->
         <div id="matrixGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Populated by JS -->
         </div>
@@ -266,7 +274,7 @@
     <div class="bg-cardDark border border-borderLight rounded-2xl overflow-hidden shadow-xl">
       <button onclick="toggleAccordion(3)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-cardElevated/40 transition">
         <div class="flex items-center gap-4">
-          <span id="step3Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm">
+          <span id="step3Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0">
             3
           </span>
           <div>
@@ -284,7 +292,7 @@
 
       <div id="content3" class="accordion-content accordion-closed px-6 pb-6 border-t border-borderLight/60 pt-5 flex flex-col gap-4">
         
-        <!-- Live Threshold Slider Controller (Prominent) -->
+        <!-- Live Threshold Slider Controller -->
         <div class="bg-brandDark border border-borderLight rounded-xl p-5 flex flex-col gap-3">
           <div class="flex justify-between items-center text-xs md:text-sm">
             <span class="font-bold text-slate-200 flex items-center gap-2">
@@ -333,7 +341,7 @@
   </footer>
 
   <!-- ============================================================ -->
-  <!-- 6. JAVASCRIPT LOGIC -->
+  <!-- 6. JAVASCRIPT LOGIC (단일 정본) -->
   <!-- ============================================================ -->
   <script>
     const DOMAINS = {
@@ -487,7 +495,6 @@
       content.classList.remove('accordion-closed');
       content.classList.add('accordion-open');
       chevron.className = "fa-solid fa-chevron-up text-slate-400 text-base transition-transform duration-300";
-
       content.parentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -499,9 +506,9 @@
       ['welfare', 'rnd', 'startup', 'audit'].forEach(k => {
         const btn = document.getElementById(`tab-${k}`);
         if (k === key) {
-          btn.className = 'px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-brandBlue text-slate-950 transition flex items-center gap-2 shrink-0 shadow';
+          btn.className = 'px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold bg-brandBlue text-slate-950 transition flex items-center gap-2 shadow';
         } else {
-          btn.className = 'px-4 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2 shrink-0';
+          btn.className = 'px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2';
         }
       });
 
@@ -527,7 +534,7 @@
       // Reset Step 2 & Step 3
       document.getElementById('step2Status').innerText = "대기 중";
       document.getElementById('step2Status').className = "text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400";
-      document.getElementById('step2Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm";
+      document.getElementById('step2Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0";
       document.getElementById('matrixGrid').innerHTML = `
         <div class="col-span-full text-center text-slate-500 py-16">
           <i class="fa-solid fa-layer-group text-4xl mb-3 opacity-30"></i>
@@ -537,7 +544,7 @@
 
       document.getElementById('step3Status').innerText = "대기 중";
       document.getElementById('step3Status').className = "text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400";
-      document.getElementById('step3Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm";
+      document.getElementById('step3Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0";
       document.getElementById('actionResultBlock').innerHTML = `
         <div class="text-center text-slate-500 py-8">
           <i class="fa-solid fa-file-signature text-4xl mb-3 opacity-30"></i>
@@ -579,13 +586,13 @@
         renderMatrix(evaluated);
         document.getElementById('step2Status').innerText = `완료 (${evaluated.length}개 기준)`;
         document.getElementById('step2Status').className = "text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-        document.getElementById('step2Icon').className = "w-9 h-9 rounded-2xl bg-emerald-500 text-slate-950 font-black flex items-center justify-center text-sm shadow-md";
+        document.getElementById('step2Icon').className = "w-9 h-9 rounded-2xl bg-emerald-500 text-slate-950 font-black flex items-center justify-center text-sm shadow-md shrink-0";
 
         // Step 3 Active
         renderAction(currentDomain, evaluated);
         document.getElementById('step3Status').innerText = "처분 완료";
         document.getElementById('step3Status').className = "text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-        document.getElementById('step3Icon').className = "w-9 h-9 rounded-2xl bg-emerald-500 text-slate-950 font-black flex items-center justify-center text-sm shadow-md";
+        document.getElementById('step3Icon').className = "w-9 h-9 rounded-2xl bg-emerald-500 text-slate-950 font-black flex items-center justify-center text-sm shadow-md shrink-0";
 
         btn.disabled = false;
         btn.innerHTML = `<i class="fa-solid fa-bolt"></i> ${DOMAINS[currentDomain].title} 다시 평가 실행`;
