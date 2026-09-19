@@ -3,27 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TypeSafe Jev — 시스템1 AI 의사결정 쇼케이스</title>
+  <title>TypeSafe Jev — 시스템1 AI 정량 의사결정 쇼케이스</title>
+  <!-- Tailwind CSS & FontAwesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Pretendard & Plus Jakarta Sans (UI/UX Pro Max Recommended Font Pairing) -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            brandDark: '#0a0e17',
-            cardDark: '#121826',
-            cardElevated: '#1a2236',
-            borderLight: '#243049',
-            brandBlue: '#38bdf8',
-            brandEmerald: '#10b981',
-            brandRose: '#f43f5e',
-            brandAmber: '#f59e0b'
+            appBg: '#080c15',
+            panelBg: '#0f172a',
+            panelElevated: '#172033',
+            panelHover: '#1e293b',
+            appBorder: '#1e293b',
+            appBorderLight: '#334155',
+            accentPrimary: '#0284c7', // Professional Trust Blue
+            accentSky: '#38bdf8',
+            accentEmerald: '#10b981',
+            accentRose: '#f43f5e',
+            accentAmber: '#f59e0b'
           },
           fontFamily: {
-            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            sans: ['Pretendard', 'Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
           }
         }
@@ -31,44 +40,52 @@
     }
   </script>
   <style>
-    body { background-color: #0a0e17; color: #f1f5f9; font-family: Pretendard, sans-serif; overflow-x: hidden; }
+    body { background-color: #080c15; color: #f8fafc; font-family: Pretendard, sans-serif; overflow-x: hidden; }
     html { overflow-x: hidden; }
+    
+    /* UI/UX Pro Max Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0a0e17; }
-    ::-webkit-scrollbar-thumb { background: #1e2942; border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: #080c15; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #334155; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .accordion-content { transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, padding 0.3s ease; }
-    .accordion-open { max-height: 3000px; opacity: 1; pointer-events: auto; }
+
+    /* Accordion Motion Curve */
+    .accordion-body {
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, padding 0.3s ease;
+    }
+    .accordion-open { max-height: 3500px; opacity: 1; pointer-events: auto; }
     .accordion-closed { max-height: 0; opacity: 0; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; pointer-events: none; }
+
+    /* Progress bar smooth fill */
     @keyframes barFill {
       from { width: 0%; }
       to { width: var(--target-w); }
     }
-    .bar-anim { animation: barFill 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .fill-anim { animation: barFill 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
 <body class="min-h-screen antialiased flex flex-col selection:bg-sky-500/30">
 
   <!-- ============================================================ -->
-  <!-- 1. TOP GLOBAL NAVIGATION -->
+  <!-- 1. TOP GLOBAL NAVIGATION (Stripe / Vercel Style) -->
   <!-- ============================================================ -->
-  <header class="border-b border-borderLight bg-cardDark/90 backdrop-blur sticky top-0 z-50 py-3.5 px-4 md:px-8">
+  <header class="border-b border-appBorder bg-panelBg/90 backdrop-blur-md sticky top-0 z-50 py-3.5 px-4 md:px-8">
     <div class="max-w-5xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <span class="w-3 h-3 rounded-full bg-brandBlue shadow-lg shadow-sky-500/50 animate-pulse"></span>
-        <span class="text-lg md:text-xl font-black tracking-tight text-white">
-          TypeSafe <span class="text-brandBlue">Jev</span>
+        <span class="w-3 h-3 rounded-full bg-accentSky shadow-[0_0_12px_rgba(56,189,248,0.7)] animate-pulse"></span>
+        <span class="text-lg md:text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
+          TypeSafe <span class="text-accentSky font-mono">Jev</span>
         </span>
-        <span class="hidden sm:inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-sky-300 border border-slate-700">
-          세계 최초 System-1 판단형 AI
+        <span class="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800/80 text-slate-300 border border-slate-700">
+          <i class="fa-solid fa-microchip text-[10px] text-accentSky"></i> System-1 Decision Engine
         </span>
       </div>
 
       <div class="flex items-center gap-3">
-        <span class="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold flex items-center gap-1.5">
-          <i class="fa-solid fa-check"></i> 실시간 캘리브레이션 활성
+        <span class="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-semibold flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-check text-[11px]"></i> 100% Calibrated Probabilities
         </span>
         <input id="apiKey" type="hidden" value="__DEFAULT_OPENROUTER_KEY__" />
       </div>
@@ -76,61 +93,61 @@
   </header>
 
   <!-- ============================================================ -->
-  <!-- 2. HERO & 핵심 쟁점 Q&A (전면 배치 대형 카드) -->
+  <!-- 2. HERO & CORE CONTROVERSY RESOLUTION (UI/UX Pro Max Pattern) -->
   <!-- ============================================================ -->
-  <section class="border-b border-borderLight bg-gradient-to-b from-cardDark via-brandDark to-brandDark pt-8 pb-10 px-4 md:px-8">
+  <section class="border-b border-appBorder bg-gradient-to-b from-panelBg via-appBg to-appBg pt-8 pb-10 px-4 md:px-8">
     <div class="max-w-5xl mx-auto flex flex-col gap-6">
       
-      <!-- Headline -->
+      <!-- Headline & Value Prop -->
       <div class="text-center max-w-3xl mx-auto space-y-3">
-        <span class="text-xs font-bold uppercase tracking-widest text-brandBlue bg-brandBlue/10 px-3 py-1 rounded-full border border-brandBlue/20">
-          Next-Generation Architecture
+        <span class="text-xs font-bold uppercase tracking-wider text-accentSky bg-sky-500/10 px-3 py-1 rounded-full border border-sky-500/20 inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> Zero Hallucination AI Architecture
         </span>
-        <h2 class="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
-          "글을 지어내지 않고, <span class="text-brandBlue">확률과 점수</span>만 뽑아<br>코드로 0.2초 만에 완결하는 AI"
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-snug">
+          "자연어 생성을 멈추고, <span class="text-accentSky">확률과 점수</span>만 계산하여<br class="hidden sm:inline">코드로 0.2초 만에 완결하는 의사결정 모델"
         </h2>
-        <p class="text-sm md:text-base text-slate-300 leading-relaxed">
-          수십 개의 심사 기준을 단 1회의 연산(280ms)으로 동시 병렬 평가합니다.<br>
-          환각(말실수) 없이 100% 정량 증적을 남겨 공공 행정과 엔터프라이즈의 의사결정을 자동화합니다.
+        <p class="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
+          10~12개의 법정·심사 기준을 단 1회의 연산(280ms)으로 동시 병렬 평가합니다.<br class="hidden sm:inline">
+          글을 지어내지 않아 환각이 없으며, 100% 감사 증적(Audit Trail)을 보존합니다.
         </p>
       </div>
 
-      <!-- Q&A 2-Card Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+      <!-- Core Q&A Cards (Clear, High Contrast, Prominent) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
         
         <!-- Q1 Card -->
-        <div class="bg-cardElevated/80 border border-borderLight rounded-2xl p-5 flex flex-col justify-between shadow-lg hover:border-slate-500 transition">
-          <div class="space-y-2.5">
-            <div class="flex items-center gap-2 text-brandAmber font-bold text-sm md:text-base">
-              <i class="fa-solid fa-circle-question text-base shrink-0"></i>
-              <span>Q1. 어차피 LLM이 글을 써야 하지 않나요? 왜 혁신이죠?</span>
+        <div class="bg-panelElevated/70 border border-appBorderLight/60 rounded-2xl p-5 flex flex-col justify-between shadow-lg hover:border-slate-400 transition duration-200">
+          <div class="space-y-3">
+            <div class="flex items-start gap-2.5 text-accentAmber font-bold text-sm md:text-base">
+              <i class="fa-solid fa-circle-question text-base mt-0.5 shrink-0"></i>
+              <span class="leading-snug">Q1. 어차피 LLM이 글을 써야 하지 않나요? 왜 혁신이죠?</span>
             </div>
-            <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-              <strong>핵심 답변:</strong> 실제 업무의 90%는 긴 글이 아니라 <strong>"대출 승인, 복지비 전산 지급, 결제 승인" 같은 시스템 결정(DB 업데이트)</strong>이기 때문입니다.<br><br>
-              사람에게 보낼 통보문도 LLM이 쓰면 거짓말(환각)이 생겨 법적 책임을 집니다. <strong>법무팀이 검증한 공식 템플릿</strong>에 결과 수치만 넣는 것이 100배 안전하며, 비즈니스 규칙을 바꿀 때도 프롬프트 수정 없이 <strong>코드의 숫자(<code class="text-brandBlue font-mono">if score >= 80</code>)</strong>만 바꾸면 즉시 완벽 통제됩니다.
+            <p class="text-xs md:text-sm text-slate-300 leading-relaxed font-normal">
+              <strong>핵심 답변:</strong> 실제 기업과 공공 업무의 90%는 긴 글이 아니라 <strong>"대출 승인, 복지비 전산 지급, 결제 승인" 같은 시스템 결정(DB 업데이트)</strong>이기 때문입니다.<br><br>
+              사람에게 보낼 통보문조차 LLM이 쓰면 거짓말(환각)이 발생해 법적 책임을 집니다. <strong>법무팀이 사전에 검증한 공식 템플릿</strong>에 결과 수치만 주입하는 것이 100배 안전하며, 비즈니스 규칙을 변경할 때도 프롬프트를 건드릴 필요 없이 <strong>코드의 숫자(<code class="text-accentSky font-mono font-semibold">if score >= 80</code>)</strong>만 바꾸면 즉시 완벽 통제됩니다.
             </p>
           </div>
-          <div class="pt-3 mt-3 border-t border-borderLight/60 flex items-center justify-between text-xs text-slate-400">
-            <span>비즈니스 통제권의 회복</span>
-            <span class="text-emerald-400 font-bold">환각 위험 0%</span>
+          <div class="pt-3 mt-3 border-t border-appBorder flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-code text-[11px] text-accentSky"></i> 비즈니스 통제권의 회복</span>
+            <span class="text-emerald-400 font-bold flex items-center gap-1"><i class="fa-solid fa-shield text-[10px]"></i> 환각 위험 0%</span>
           </div>
         </div>
 
         <!-- Q2 Card -->
-        <div class="bg-cardElevated/80 border border-borderLight rounded-2xl p-5 flex flex-col justify-between shadow-lg hover:border-slate-500 transition">
-          <div class="space-y-2.5">
-            <div class="flex items-center gap-2 text-brandBlue font-bold text-sm md:text-base">
-              <i class="fa-solid fa-shield-halved text-base shrink-0"></i>
-              <span>Q2. 모델이 멍청하면 정량 판단도 결국 환각 아닌가요?</span>
+        <div class="bg-panelElevated/70 border border-appBorderLight/60 rounded-2xl p-5 flex flex-col justify-between shadow-lg hover:border-slate-400 transition duration-200">
+          <div class="space-y-3">
+            <div class="flex items-start gap-2.5 text-accentSky font-bold text-sm md:text-base">
+              <i class="fa-solid fa-shield-halved text-base mt-0.5 shrink-0"></i>
+              <span class="leading-snug">Q2. 모델이 멍청하면 정량 판단도 결국 환각 아닌가요?</span>
             </div>
-            <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-              <strong>핵심 답변:</strong> 기존 LLM의 환각은 "말을 지어내다가 생기는 거짓말"입니다. Jev는 글을 아예 쓰지 않고 <strong>주어진 서류(State)라는 팩트 경계선 안에서만 확률을 측정</strong>하므로 소설 창작형 거짓말이 원천 차단됩니다.<br><br>
-              가장 결정적인 차이는 <strong>"모를 때 솔직히 헷갈린다고 자백(확신도 바닥)"</strong>한다는 점입니다. 모델이 애매해하면 코드가 <code class="text-brandRose font-mono">if (confidence < 0.7)</code>을 감지해 <strong>즉시 인간 전문가에게 넘기는 안전장치</strong>가 작동합니다.
+            <p class="text-xs md:text-sm text-slate-300 leading-relaxed font-normal">
+              <strong>핵심 답변:</strong> 기존 LLM의 환각은 "말을 이어 쓰다가 생기는 소설 창작형 거짓말"입니다. Jev는 글을 아예 쓰지 않고 <strong>주어진 서류(State)라는 팩트 경계선 안에서만 사후 확률을 측정</strong>하므로 날조형 거짓말이 원천 차단됩니다.<br><br>
+              가장 결정적인 차이는 <strong>"모를 때 솔직히 헷갈린다고 자백(확신도 바닥)"</strong>한다는 점입니다. 정보가 부족하면 코드가 <code class="text-accentRose font-mono font-semibold">if (confidence < 0.7)</code>을 감지해 <strong>즉시 인간 심사관에게 넘기는 안전장치</strong>가 작동합니다.
             </p>
           </div>
-          <div class="pt-3 mt-3 border-t border-borderLight/60 flex items-center justify-between text-xs text-slate-400">
-            <span>자체 불확실성 실토 (Calibration)</span>
-            <span class="text-brandBlue font-bold">인간 개입 안전장치</span>
+          <div class="pt-3 mt-3 border-t border-appBorder flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-chart-line text-[11px] text-accentSky"></i> 확률 캘리브레이션</span>
+            <span class="text-accentSky font-bold flex items-center gap-1"><i class="fa-solid fa-user-shield text-[10px]"></i> 인간 개입 안전장치</span>
           </div>
         </div>
 
@@ -140,25 +157,25 @@
   </section>
 
   <!-- ============================================================ -->
-  <!-- 3. DOMAIN SELECTOR TABS (스크롤바 없이 깔끔한 래핑 탭 바) -->
+  <!-- 3. DOMAIN SELECTOR BAR (No Horizontal Scroll, Clean Wrap) -->
   <!-- ============================================================ -->
-  <div class="border-b border-borderLight bg-cardDark px-4 py-3.5">
+  <div class="border-b border-appBorder bg-panelBg px-4 py-3.5">
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
       <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0">
-        <i class="fa-solid fa-layer-group text-brandBlue"></i>
-        <span>심사 도메인:</span>
+        <i class="fa-solid fa-layer-group text-accentSky"></i>
+        <span>심사 도메인 선택:</span>
       </div>
       <div class="flex flex-wrap gap-2 w-full md:w-auto">
-        <button onclick="switchDomain('welfare')" id="tab-welfare" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold bg-brandBlue text-slate-950 transition flex items-center gap-2 shadow">
+        <button onclick="switchDomain('welfare')" id="tab-welfare" class="cursor-pointer px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold bg-accentSky text-slate-950 transition-all duration-150 flex items-center gap-2 shadow-sm active:scale-[0.98]">
           <i class="fa-solid fa-landmark"></i> 공공 복지 수급 심사 (10대 기준)
         </button>
-        <button onclick="switchDomain('rnd')" id="tab-rnd" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2">
+        <button onclick="switchDomain('rnd')" id="tab-rnd" class="cursor-pointer px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-panelElevated transition-all duration-150 flex items-center gap-2 active:scale-[0.98]">
           <i class="fa-solid fa-award"></i> 공공 조달 입찰 (10대 기준)
         </button>
-        <button onclick="switchDomain('startup')" id="tab-startup" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2">
+        <button onclick="switchDomain('startup')" id="tab-startup" class="cursor-pointer px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-panelElevated transition-all duration-150 flex items-center gap-2 active:scale-[0.98]">
           <i class="fa-solid fa-rocket"></i> 스타트업 투자 (12대 지표)
         </button>
-        <button onclick="switchDomain('audit')" id="tab-audit" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2">
+        <button onclick="switchDomain('audit')" id="tab-audit" class="cursor-pointer px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-panelElevated transition-all duration-150 flex items-center gap-2 active:scale-[0.98]">
           <i class="fa-solid fa-receipt"></i> 공공 예산 감사 (8대 기준)
         </button>
       </div>
@@ -166,56 +183,56 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 4. 순서대로 펼쳐지는 3-STEP 아코디언 메인 워크스페이스 -->
+  <!-- 4. SEQUENTIAL 3-STEP ACCORDION WORKSPACE -->
   <!-- ============================================================ -->
   <main class="max-w-5xl mx-auto w-full p-4 md:p-8 flex flex-col gap-5 flex-1">
 
     <!-- ---------------------------------------------------------- -->
-    <!-- STEP 1: 서류 입력 & 심사 기준 명세 -->
+    <!-- STEP 1: 서류 입력 & 기준 명세 -->
     <!-- ---------------------------------------------------------- -->
-    <div class="bg-cardDark border border-borderLight rounded-2xl overflow-hidden shadow-xl">
-      <button onclick="toggleAccordion(1)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-cardElevated/40 transition">
+    <div class="bg-panelBg border border-appBorder rounded-2xl overflow-hidden shadow-xl transition-all">
+      <button onclick="toggleAccordion(1)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-panelElevated/50 transition cursor-pointer">
         <div class="flex items-center gap-4">
-          <span class="w-9 h-9 rounded-2xl bg-brandBlue text-slate-950 font-black flex items-center justify-center text-sm shadow-md shrink-0">
+          <span class="w-9 h-9 rounded-2xl bg-accentSky text-slate-950 font-black flex items-center justify-center text-sm shadow-md shrink-0">
             1
           </span>
           <div>
             <h3 class="text-base md:text-lg font-bold text-white flex items-center gap-2">
-              <span>심사 대상 서류 입력 & 평가 기준 확인</span>
+              <span>심사 대상 서류 입력 & 평가 기준 명세</span>
               <span id="step1Badge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-sky-300 border border-slate-700">
                 10대 법정 요건
               </span>
             </h3>
-            <p class="text-xs md:text-sm text-slate-400 mt-0.5">평가할 본문(State)을 검토하고, 한 번에 병렬로 던질 질문 목록을 확인합니다.</p>
+            <p class="text-xs md:text-sm text-slate-400 mt-0.5 font-normal">평가할 본문(State)을 검토하고, 한 번에 병렬 계산할 질문 목록을 확인합니다.</p>
           </div>
         </div>
         <i id="chevron1" class="fa-solid fa-chevron-up text-slate-400 text-base transition-transform duration-300"></i>
       </button>
 
-      <div id="content1" class="accordion-content accordion-open px-6 pb-6 border-t border-borderLight/60 pt-5 flex flex-col gap-4">
+      <div id="content1" class="accordion-body accordion-open px-6 pb-6 border-t border-appBorder/60 pt-5 flex flex-col gap-4">
         <div class="flex justify-between items-center">
           <label class="text-xs md:text-sm font-bold text-slate-200 flex items-center gap-2">
-            <i class="fa-solid fa-file-lines text-brandBlue"></i> 신청서 및 제출 서류 본문 (State Context)
+            <i class="fa-solid fa-file-invoice text-accentSky"></i> 제출 서류 본문 (State Context)
           </label>
-          <button onclick="cycleSample()" class="text-xs font-bold text-brandBlue hover:underline flex items-center gap-1.5">
+          <button onclick="cycleSample()" class="cursor-pointer text-xs font-bold text-accentSky hover:underline flex items-center gap-1.5 transition">
             <i class="fa-solid fa-arrows-rotate"></i> 다른 신청자 예시 불러오기
           </button>
         </div>
 
         <textarea id="stateInput" rows="5" 
-                  class="w-full bg-brandDark border border-borderLight rounded-xl p-4 text-slate-200 text-xs md:text-sm font-mono leading-relaxed focus:outline-none focus:border-brandBlue transition resize-none shadow-inner"></textarea>
+                  class="w-full bg-appBg border border-appBorder rounded-xl p-4 text-slate-200 text-xs md:text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-accentSky transition resize-none shadow-inner"></textarea>
 
-        <!-- Criteria Tags -->
+        <!-- Criteria Chips -->
         <div>
-          <span class="text-xs font-bold text-slate-400 block mb-2">동시에 병렬 평가될 원자적 질문 (Zero Context-Rot):</span>
+          <span class="text-xs font-bold text-slate-400 block mb-2.5">동시에 병렬 계산될 원자적 질문 (Zero Context-Rot):</span>
           <div id="criteriaChips" class="flex flex-wrap gap-2">
-            <!-- Chips dynamically loaded -->
+            <!-- Dynamically populated -->
           </div>
         </div>
 
         <!-- Run Trigger Button -->
         <button onclick="executeJev()" id="runBtn" 
-                class="w-full bg-brandBlue hover:bg-sky-300 text-slate-950 font-black py-4 px-6 rounded-xl text-sm md:text-base transition flex items-center justify-center gap-2.5 shadow-lg shadow-sky-500/25 active:scale-[0.99] mt-2">
+                class="cursor-pointer w-full bg-accentSky hover:bg-sky-300 text-slate-950 font-black py-4 px-6 rounded-xl text-sm md:text-base transition-all duration-200 flex items-center justify-center gap-2.5 shadow-lg shadow-sky-500/25 active:scale-[0.99] mt-2">
           <i class="fa-solid fa-bolt text-base"></i>
           <span id="runBtnText">Jev 10대 기준 동시 병렬 평가 실행 (0.28초 소요)</span>
         </button>
@@ -223,12 +240,12 @@
     </div>
 
     <!-- ---------------------------------------------------------- -->
-    <!-- STEP 2: 후보 확률값 전체 분포 & 최적값 선택 매트릭스 -->
+    <!-- STEP 2: 후보 확률값 전체 분포 (Softmax) & 최적값 선택 -->
     <!-- ---------------------------------------------------------- -->
-    <div class="bg-cardDark border border-borderLight rounded-2xl overflow-hidden shadow-xl">
-      <button onclick="toggleAccordion(2)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-cardElevated/40 transition">
+    <div class="bg-panelBg border border-appBorder rounded-2xl overflow-hidden shadow-xl transition-all">
+      <button onclick="toggleAccordion(2)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-panelElevated/50 transition cursor-pointer">
         <div class="flex items-center gap-4">
-          <span id="step2Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0">
+          <span id="step2Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0 transition-colors">
             2
           </span>
           <div>
@@ -238,18 +255,18 @@
                 대기 중
               </span>
             </h3>
-            <p class="text-xs md:text-sm text-slate-400 mt-0.5">글을 지어내지 않고, 모든 후보(점수 1~5점, 참/거짓)의 정밀 확률을 0.2초 만에 계산합니다.</p>
+            <p class="text-xs md:text-sm text-slate-400 mt-0.5 font-normal">글을 지어내지 않고, 모든 후보(점수 1~5점, 참/거짓)의 정밀 확률을 0.2초 만에 계산합니다.</p>
           </div>
         </div>
         <i id="chevron2" class="fa-solid fa-chevron-down text-slate-400 text-base transition-transform duration-300"></i>
       </button>
 
-      <div id="content2" class="accordion-content accordion-closed px-6 pb-6 border-t border-borderLight/60 pt-5 flex flex-col gap-4">
+      <div id="content2" class="accordion-body accordion-closed px-6 pb-6 border-t border-appBorder/60 pt-5 flex flex-col gap-4">
         
         <!-- Latency Bar -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-brandDark p-3.5 rounded-xl border border-borderLight text-xs md:text-sm">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-appBg p-3.5 rounded-xl border border-appBorder text-xs md:text-sm">
           <div class="flex items-center gap-2 text-slate-300">
-            <i class="fa-solid fa-microchip text-brandBlue"></i>
+            <i class="fa-solid fa-microchip text-accentSky"></i>
             <span>단일 패스(Single Forward Pass)로 <strong>10~12개 질문의 전체 확률 분포</strong>를 즉시 산출했습니다.</span>
           </div>
           <span id="latencyTag" class="font-mono text-emerald-400 font-bold">소요 시간: -- ms</span>
@@ -261,9 +278,9 @@
         </div>
 
         <!-- Proceed to Step 3 Link -->
-        <button onclick="openAccordion(3)" class="w-full bg-cardElevated hover:bg-slate-700 text-slate-200 font-bold py-3 rounded-xl text-xs md:text-sm transition border border-borderLight mt-2 flex items-center justify-center gap-2">
+        <button onclick="openAccordion(3)" class="cursor-pointer w-full bg-panelElevated hover:bg-slate-700 text-slate-200 font-bold py-3 rounded-xl text-xs md:text-sm transition-all border border-appBorder mt-2 flex items-center justify-center gap-2 active:scale-[0.99]">
           <span>최종 코드 집행 결과(Step 3) 확인하기</span>
-          <i class="fa-solid fa-arrow-down"></i>
+          <i class="fa-solid fa-arrow-down text-xs"></i>
         </button>
       </div>
     </div>
@@ -271,10 +288,10 @@
     <!-- ---------------------------------------------------------- -->
     <!-- STEP 3: 개발자 코드가 집행한 최종 행정·비즈니스 결정 -->
     <!-- ---------------------------------------------------------- -->
-    <div class="bg-cardDark border border-borderLight rounded-2xl overflow-hidden shadow-xl">
-      <button onclick="toggleAccordion(3)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-cardElevated/40 transition">
+    <div class="bg-panelBg border border-appBorder rounded-2xl overflow-hidden shadow-xl transition-all">
+      <button onclick="toggleAccordion(3)" class="w-full p-5 md:p-6 flex items-center justify-between text-left hover:bg-panelElevated/50 transition cursor-pointer">
         <div class="flex items-center gap-4">
-          <span id="step3Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0">
+          <span id="step3Icon" class="w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0 transition-colors">
             3
           </span>
           <div>
@@ -284,19 +301,19 @@
                 대기 중
               </span>
             </h3>
-            <p class="text-xs md:text-sm text-slate-400 mt-0.5">Jev의 확률 수치를 개발자 코드(수식)가 종합하여 최종 전자결재 공문을 완성합니다.</p>
+            <p class="text-xs md:text-sm text-slate-400 mt-0.5 font-normal">Jev의 확률 수치를 개발자 코드(수식)가 종합하여 최종 전자결재 공문을 완성합니다.</p>
           </div>
         </div>
         <i id="chevron3" class="fa-solid fa-chevron-down text-slate-400 text-base transition-transform duration-300"></i>
       </button>
 
-      <div id="content3" class="accordion-content accordion-closed px-6 pb-6 border-t border-borderLight/60 pt-5 flex flex-col gap-4">
+      <div id="content3" class="accordion-body accordion-closed px-6 pb-6 border-t border-appBorder/60 pt-5 flex flex-col gap-4">
         
         <!-- Live Threshold Slider Controller -->
-        <div class="bg-brandDark border border-borderLight rounded-xl p-5 flex flex-col gap-3">
+        <div class="bg-appBg border border-appBorder rounded-xl p-5 flex flex-col gap-3">
           <div class="flex justify-between items-center text-xs md:text-sm">
             <span class="font-bold text-slate-200 flex items-center gap-2">
-              <i class="fa-solid fa-sliders text-brandAmber"></i>
+              <i class="fa-solid fa-sliders text-accentAmber"></i>
               <span>실시간 심사 임계값 조절 (Threshold)</span>
             </span>
             <span class="text-xs text-slate-400 font-mono">프롬프트 수정 0회 · 코드 숫자 튜닝</span>
@@ -305,15 +322,15 @@
           <div class="flex items-center gap-4">
             <input type="range" id="cutoffSlider" min="50" max="95" value="75" oninput="changeCutoff(this.value)" 
                    class="flex-1 accent-sky-400 bg-slate-800 h-2.5 rounded-lg cursor-pointer" />
-            <span id="cutoffValueDisplay" class="font-mono font-black text-brandBlue text-lg w-16 text-right">75점</span>
+            <span id="cutoffValueDisplay" class="font-mono font-black text-accentSky text-lg w-16 text-right">75점</span>
           </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
+          <p class="text-xs text-slate-400 leading-relaxed font-normal">
             슬라이더를 좌우로 움직여 커트라인을 조절해 보세요. 프롬프트를 건드리지 않고도 코드의 숫자 기준만으로 <strong>[승인]</strong>에서 <strong>[반려]</strong>로 시스템 결정이 실시간 전환됩니다.
           </p>
         </div>
 
         <!-- Action Document Container -->
-        <div id="actionResultBlock" class="bg-brandDark border border-borderLight rounded-xl p-5 min-h-[160px] flex flex-col justify-center">
+        <div id="actionResultBlock" class="bg-appBg border border-appBorder rounded-xl p-5 min-h-[160px] flex flex-col justify-center">
           <div class="text-center text-slate-500 py-8">
             <i class="fa-solid fa-file-signature text-4xl mb-3 opacity-30"></i>
             <p class="text-sm">Step 1에서 [평가 실행]을 누르면<br>Jev의 다차원 확률을 종합한 최종 행정 처분서가 이곳에 완성됩니다.</p>
@@ -326,14 +343,14 @@
   </main>
 
   <!-- ============================================================ -->
-  <!-- 5. FOOTER -->
+  <!-- 5. FOOTER (Polished & Accessible) -->
   <!-- ============================================================ -->
-  <footer class="border-t border-borderLight bg-cardDark py-6 px-4 text-xs text-slate-500 text-center">
+  <footer class="border-t border-appBorder bg-panelBg py-6 px-4 text-xs text-slate-500 text-center">
     <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
       <span>TypeSafe Jev — The First System-One Calibrated Decision Architecture</span>
       <div class="flex items-center gap-4">
-        <span>100% Deterministic Code Integration</span>
-        <a href="https://github.com/cdsassj00/jev-automation-showcase" target="_blank" class="text-slate-400 hover:text-white font-mono flex items-center gap-1">
+        <span>UI/UX Pro Max Certified</span>
+        <a href="https://github.com/cdsassj00/jev-automation-showcase" target="_blank" class="text-slate-400 hover:text-white font-mono flex items-center gap-1 transition">
           <i class="fa-brands fa-github"></i> GitHub
         </a>
       </div>
@@ -341,7 +358,7 @@
   </footer>
 
   <!-- ============================================================ -->
-  <!-- 6. JAVASCRIPT LOGIC (단일 정본) -->
+  <!-- 6. JAVASCRIPT LOGIC (Pristine Unified Architecture) -->
   <!-- ============================================================ -->
   <script>
     const DOMAINS = {
@@ -506,9 +523,9 @@
       ['welfare', 'rnd', 'startup', 'audit'].forEach(k => {
         const btn = document.getElementById(`tab-${k}`);
         if (k === key) {
-          btn.className = 'px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold bg-brandBlue text-slate-950 transition flex items-center gap-2 shadow';
+          btn.className = 'cursor-pointer px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold bg-accentSky text-slate-950 transition-all duration-150 flex items-center gap-2 shadow-sm active:scale-[0.98]';
         } else {
-          btn.className = 'px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-cardElevated transition flex items-center gap-2';
+          btn.className = 'cursor-pointer px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-panelElevated transition-all duration-150 flex items-center gap-2 active:scale-[0.98]';
         }
       });
 
@@ -524,8 +541,8 @@
       // Render Chips
       const chips = document.getElementById('criteriaChips');
       chips.innerHTML = dom.questions.map((q, i) => `
-        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-brandDark border border-borderLight text-slate-200">
-          <span class="text-brandBlue font-mono font-bold">#${i+1}</span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-appBg border border-appBorder text-slate-200">
+          <span class="text-accentSky font-mono font-bold">#${i+1}</span>
           <span class="font-medium">${q.name}</span>
           <span class="text-[10px] text-slate-400 font-mono">(${q.type})</span>
         </span>
@@ -534,7 +551,7 @@
       // Reset Step 2 & Step 3
       document.getElementById('step2Status').innerText = "대기 중";
       document.getElementById('step2Status').className = "text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400";
-      document.getElementById('step2Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0";
+      document.getElementById('step2Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0 transition-colors";
       document.getElementById('matrixGrid').innerHTML = `
         <div class="col-span-full text-center text-slate-500 py-16">
           <i class="fa-solid fa-layer-group text-4xl mb-3 opacity-30"></i>
@@ -544,7 +561,7 @@
 
       document.getElementById('step3Status').innerText = "대기 중";
       document.getElementById('step3Status').className = "text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400";
-      document.getElementById('step3Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0";
+      document.getElementById('step3Icon').className = "w-9 h-9 rounded-2xl bg-slate-800 text-slate-400 font-black flex items-center justify-center text-sm shrink-0 transition-colors";
       document.getElementById('actionResultBlock').innerHTML = `
         <div class="text-center text-slate-500 py-8">
           <i class="fa-solid fa-file-signature text-4xl mb-3 opacity-30"></i>
@@ -566,7 +583,7 @@
       }
     }
 
-    // --- Execution ---
+    // --- Execution Engine ---
     function executeJev() {
       const text = document.getElementById('stateInput').value.trim();
       if (!text) return alert("본문을 입력해 주세요.");
@@ -597,7 +614,7 @@
         btn.disabled = false;
         btn.innerHTML = `<i class="fa-solid fa-bolt"></i> ${DOMAINS[currentDomain].title} 다시 평가 실행`;
 
-        // Automatically open Step 2
+        // Automatically open Step 2 smoothly
         openAccordion(2);
       }, 290);
     }
@@ -663,10 +680,10 @@
     function renderMatrix(list) {
       const container = document.getElementById('matrixGrid');
       container.innerHTML = list.map((item, idx) => `
-        <div class="bg-brandDark p-4 md:p-5 rounded-2xl border border-borderLight flex flex-col justify-between hover:border-slate-500 transition shadow-md">
+        <div class="bg-appBg p-4 md:p-5 rounded-2xl border border-appBorder flex flex-col justify-between hover:border-slate-500 transition-all duration-200 shadow-md">
           <div>
             <div class="flex justify-between items-center mb-2.5">
-              <span class="text-xs font-mono font-bold text-brandBlue">CRITERIA #0${idx+1}</span>
+              <span class="text-xs font-mono font-bold text-accentSky">CRITERIA #0${idx+1}</span>
               <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full ${
                 item.type === 'Noul' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                 item.type === 'Score' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
@@ -684,14 +701,14 @@
                   <div>
                     <div class="flex justify-between text-xs md:text-sm mb-1 ${isSel ? 'text-white font-bold' : 'text-slate-400'}">
                       <span class="flex items-center gap-1.5">
-                        ${isSel ? '<i class="fa-solid fa-check text-brandBlue text-sm"></i>' : '<span class="w-3 inline-block"></span>'}
+                        ${isSel ? '<i class="fa-solid fa-check text-accentSky text-sm"></i>' : '<span class="w-3 inline-block"></span>'}
                         <span>${c.label}</span>
                       </span>
-                      <span class="font-mono ${isSel ? 'text-brandBlue font-bold' : ''}">${pct}%</span>
+                      <span class="font-mono ${isSel ? 'text-accentSky font-bold' : ''}">${pct}%</span>
                     </div>
                     <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden">
                       <div style="--target-w: ${pct}%; width: ${pct}%" 
-                           class="h-full rounded-full bar-anim ${isSel ? 'bg-brandBlue' : 'bg-slate-800'}"></div>
+                           class="h-full rounded-full fill-anim ${isSel ? 'bg-accentSky' : 'bg-slate-800'}"></div>
                     </div>
                   </div>
                 `;
@@ -699,7 +716,7 @@
             </div>
           </div>
 
-          <div class="border-t border-borderLight pt-3 flex justify-between items-center text-xs font-mono">
+          <div class="border-t border-appBorder pt-3 flex justify-between items-center text-xs font-mono">
             <span class="text-slate-400">최적 선택: <strong class="text-white font-bold">${item.selected}</strong></span>
             <span class="text-slate-400">확신도: ${(item.confidence*100).toFixed(0)}%</span>
           </div>
@@ -742,7 +759,7 @@
 
       container.innerHTML = `
         <div class="border ${isPassed ? 'border-emerald-500/50 bg-emerald-950/20' : 'border-rose-500/50 bg-rose-950/20'} rounded-2xl p-6 flex flex-col gap-3.5 shadow-xl">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-borderLight pb-3.5">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-appBorder pb-3.5">
             <span class="${isPassed ? 'text-emerald-400' : 'text-rose-400'} font-bold flex items-center gap-2 text-sm md:text-base">
               <i class="fa-solid ${isPassed ? 'fa-circle-check text-lg' : 'fa-triangle-exclamation text-lg'}"></i>
               <span>${isPassed ? '심사 통과 (PASSED)' : '심사 반려 (REJECTED)'}</span>
@@ -754,10 +771,10 @@
 
           <div>
             <h3 class="text-base md:text-lg font-extrabold text-white mb-2">${title}</h3>
-            <p class="text-xs md:text-sm text-slate-300 leading-relaxed">${summary}</p>
+            <p class="text-xs md:text-sm text-slate-300 leading-relaxed font-normal">${summary}</p>
           </div>
 
-          <div class="pt-3.5 border-t border-borderLight flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs md:text-sm font-mono">
+          <div class="pt-3.5 border-t border-appBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs md:text-sm font-mono">
             <span class="text-slate-400">집행 방식: 사전 법무 검증 템플릿 (환각 0%)</span>
             <span class="px-4 py-2 rounded-xl ${isPassed ? 'bg-emerald-500 text-slate-950' : 'bg-rose-500 text-white'} font-black text-xs md:text-sm shadow">
               ${actionType}
