@@ -1,0 +1,48 @@
+name: Deploy Jev Showcase with Injected Key to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Inject OpenRouter Secret into HTML
+        run: |
+          if [ -n "${{ secrets.OPENROUTER_API_KEY }}" ]; then
+            echo "Injecting OpenRouter API Key..."
+            sed -i 's|__DEFAULT_OPENROUTER_KEY__|${{ secrets.OPENROUTER_API_KEY }}|g' index.html
+          else
+            echo "No OPENROUTER_API_KEY secret found. Proceeding with empty key."
+            sed -i 's|__DEFAULT_OPENROUTER_KEY__||g' index.html
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
