@@ -65,11 +65,16 @@
         </span>
       </div>
 
-      <!-- Real API & Secrets Status -->
+      <!-- Real API & Secrets Status & Q&A Trigger -->
       <div class="flex items-center gap-2">
-        <div class="flex items-center bg-bgDark border border-borderDark rounded px-2 py-1 gap-1.5 w-48 md:w-64">
+        <button onclick="openQnAModal()" 
+                class="bg-accentSky/10 hover:bg-accentSky/20 border border-accentSky/30 text-accentSky px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1.5 transition active:scale-95 shadow-sm">
+          <i class="fa-solid fa-circle-question text-[10px]"></i>
+          <span>핵심 Q&A: 왜 Jev인가?</span>
+        </button>
+        <div class="flex items-center bg-bgDark border border-borderDark rounded px-2 py-1 gap-1.5 w-44 md:w-56">
           <i class="fa-solid fa-key text-[10px] text-slate-500"></i>
-          <input id="apiKey" type="password" value="__DEFAULT_OPENROUTER_KEY__" placeholder="API Key (비워두면 벤치마크 텔레메트리)" 
+          <input id="apiKey" type="password" value="__DEFAULT_OPENROUTER_KEY__" placeholder="API Key (비워두면 텔레메트리)" 
                  class="bg-transparent text-[11px] text-slate-200 placeholder-slate-600 focus:outline-none w-full font-mono" />
         </div>
         <span id="connStatus" class="text-[10px] px-2 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 font-mono flex items-center gap-1.5">
@@ -906,6 +911,14 @@
       }
     }
 
+    // Q&A Modal Controller
+    function openQnAModal() {
+      document.getElementById('qnaModal').classList.remove('hidden');
+    }
+    function closeQnAModal() {
+      document.getElementById('qnaModal').classList.add('hidden');
+    }
+
     // Auto-detect secret on load
     window.onload = () => {
       setDomain('welfare');
@@ -916,5 +929,90 @@
       }
     };
   </script>
+
+  <!-- Q&A Explanatory Modal (왜 Jev인가? 핵심 질문 해소) -->
+  <div id="qnaModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surfaceDark border border-borderDark rounded-xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+      
+      <!-- Modal Header -->
+      <div class="p-4 border-b border-borderDark flex justify-between items-center bg-surfaceElevated">
+        <div class="flex items-center gap-2.5">
+          <span class="p-1.5 rounded bg-accentSky/10 border border-accentSky/20 text-accentSky text-sm">
+            <i class="fa-solid fa-brain"></i>
+          </span>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100">핵심 기술 Q&A: 왜 Jev인가?</h3>
+            <p class="text-[10px] text-slate-400">엔지니어와 의사결정자가 가장 많이 던지는 2가지 날카로운 질문과 해답</p>
+          </div>
+        </div>
+        <button onclick="closeQnAModal()" class="text-slate-400 hover:text-slate-200 text-base p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Questions & Answers) -->
+      <div class="p-5 overflow-y-auto space-y-4 text-xs leading-relaxed">
+
+        <!-- Question 1 -->
+        <div class="bg-bgDark border border-borderDark rounded-lg p-4 space-y-2">
+          <div class="flex items-start gap-2 text-accentAmber font-bold text-[12px]">
+            <span class="text-xs mt-0.5">Q1.</span>
+            <span>"어차피 사람에게 보낼 답변은 LLM이 다시 써야 하는 거 아닌가요? 그런데 이게 왜 혁신인가요?"</span>
+          </div>
+          <div class="text-slate-300 text-[11px] pl-4 space-y-2 border-l border-borderDark ml-1">
+            <p>
+              <strong>답변:</strong> 실제 엔터프라이즈와 공공 행정 시스템이 원하는 것은 <strong>"장황한 에세이"</strong>가 아니라 <strong>"결정(Decision)과 시스템 트랜잭션"</strong>이기 때문입니다.
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-slate-400">
+              <li><strong>90%의 업무는 글이 필요 없습니다:</strong> 은행 대출 승인, 쿠팡 물류 라우팅, 복지비 전산 입금, 이상금융거래 차단은 글을 읽는 것이 아니라 <strong>즉시 DB 업데이트와 API를 호출</strong>해야 합니다.</li>
+              <li><strong>글이 필요해도 LLM이 쓰면 안 됩니다:</strong> LLM에게 매번 글을 쓰게 하면 엉뚱한 규정을 지어내는 <strong>환각(말실수)</strong>이 생깁니다. 법무팀이 100% 검증한 <strong>공식 템플릿</strong>에 결과 수치만 주입하는 것이 100배 안전하고 법적 책임이 없습니다.</li>
+              <li><strong>비즈니스 통제권의 회복:</strong> "합격 기준을 5% 강화하자"고 할 때 프롬프트를 고치면 LLM 성격이 뒤죽박죽됩니다. Jev는 프롬프트 수정 없이 <strong>백엔드 코드의 숫자(<code class="text-accentSky">if score >= 80</code>)</strong>만 바꾸면 즉시 완벽하게 제어됩니다.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="bg-bgDark border border-borderDark rounded-lg p-4 space-y-2">
+          <div class="flex items-start gap-2 text-accentSky font-bold text-[12px]">
+            <span class="text-xs mt-0.5">Q2.</span>
+            <span>"판단을 잘하려면 모델 체급이 좋아야 하지 않나요? 모델이 멍청하면 정량 판단도 결국 환각이 생기는 거 아닌가요?"</span>
+          </div>
+          <div class="text-slate-300 text-[11px] pl-4 space-y-2 border-l border-borderDark ml-1">
+            <p>
+              <strong>답변:</strong> 지적하신 대로 모델의 기본 독해력과 지식 체급은 매우 중요합니다. 하지만 <strong>기존 LLM과 Jev는 거짓말(환각)의 구조가 완전히 다릅니다.</strong>
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-slate-400">
+              <li><strong>스토리텔링형 환각의 원천 차단:</strong> 기존 LLM은 단어를 이어 쓰다가 맥락을 지어내어 없는 판례나 법 조항을 날조합니다. Jev는 글을 일절 쓰지 않고 <strong>주어진 서류(State)라는 팩트 경계선 안에서만 확률을 측정</strong>하므로 문장 창작형 환각이 원천 차단됩니다.</li>
+              <li><strong>모를 땐 솔직하게 헷갈린다고 자백함 (Confidence):</strong> 기존 LLM은 자기가 틀렸을 때도 100% 확신하는 척 사기를 칩니다. 반면 Jev는 정보가 부족하면 <strong>확률이 50:50으로 갈라지며 확신도(Confidence)가 바닥</strong>을 칩니다.</li>
+              <li><strong>인간 심사역 호출 안전장치:</strong> 코드가 <code class="text-accentRose">if (confidence < 0.7)</code>을 감지하면 즉시 <strong>"AI 자동 판단을 중단하고 사람 심사관에게 이관"</strong>하므로 시스템 폭망을 사전에 100% 차단할 수 있습니다.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bonus Question 3 -->
+        <div class="bg-bgDark border border-borderDark rounded-lg p-4 space-y-2">
+          <div class="flex items-start gap-2 text-emerald-400 font-bold text-[12px]">
+            <span class="text-xs mt-0.5">Q3.</span>
+            <span>"기존 LLM의 JSON Mode로 {score: 4} 이렇게 뽑는 것과 Jev는 뭐가 다른가요?"</span>
+          </div>
+          <div class="text-slate-300 text-[11px] pl-4 space-y-2 border-l border-borderDark ml-1">
+            <p class="text-slate-400">
+              기존 LLM은 질문 10개를 주면 <strong>앞 질문의 점수가 뒤 질문에 영향을 주는 후광 효과(컨텍스트 오염)</strong>가 생기고 10초 이상 걸립니다. 반면 Jev는 10~20개 질문을 <strong>100% 독립적으로 단 280ms 만에 병렬 평가</strong>하며, 달랑 숫자 하나가 아니라 <strong>1점부터 5점까지의 전체 확률 분포(Softmax)</strong>를 모두 넘겨주므로 소수점 단위 정렬(Sort)과 통계 분석이 가능합니다.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3 border-t border-borderDark bg-surfaceElevated flex justify-between items-center text-[10px] text-slate-500 font-mono">
+        <span>TypeSafe Jev Architectural Whitepaper Grounded</span>
+        <button onclick="closeQnAModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded font-sans font-bold text-xs">
+          닫기 (Close)
+        </button>
+      </div>
+
+    </div>
+  </div>
 </body>
 </html>
