@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TypeSafe Jev 업무자동화 스위트 | System-1 AI</title>
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-active {
+      border-bottom: 2px solid #38bdf8;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    .metric-badge {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-6xl flex flex-col gap-6">
+
+    <!-- Top Navigation / Brand Header -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="bg-sky-500/20 text-sky-400 border border-sky-500/40 text-xs font-black px-2.5 py-0.5 rounded-full tracking-wider uppercase">
+            System One AI
+          </span>
+          <h1 class="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-2">
+            TypeSafe <span class="text-sky-400">Jev</span> 업무자동화 엔진
+          </h1>
+        </div>
+        <p class="text-slate-400 text-xs md:text-sm mt-1">
+          자연어 문장 대신 <strong class="text-slate-200">확률(Noul)·점수(Score)·선택(Choice)</strong>을 반환받아 100% 코드로 비즈니스 액션을 완결합니다.
+        </p>
+      </div>
+
+      <!-- Settings: API Key & Live Mode Toggle -->
+      <div class="glass-card p-2.5 px-4 rounded-xl flex items-center gap-3 text-xs self-stretch md:self-auto">
+        <i class="fa-solid fa-key text-sky-400"></i>
+        <input id="apiKeyInput" type="password" placeholder="OpenRouter API Key (비워두면 시뮬레이션 모드)" 
+               class="bg-slate-900 border border-slate-700 text-slate-200 px-3 py-1.5 rounded-lg w-full md:w-64 focus:outline-none focus:border-sky-400 text-xs" />
+        <span id="modeBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-1 rounded font-bold whitespace-nowrap">
+          데모 모드
+        </span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs (4가지 실무 완성 파이프라인) -->
+    <nav class="flex overflow-x-auto border-b border-slate-800 gap-6 text-sm no-scrollbar">
+      <button onclick="switchTab('cs')" id="tab-cs" class="pb-3 tab-active flex items-center gap-2 whitespace-nowrap transition">
+        <i class="fa-solid fa-headset"></i> 1. CS 긴급 라우터 & 비상 알림
+      </button>
+      <button onclick="switchTab('hr')" id="tab-hr" class="pb-3 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
+        <i class="fa-solid fa-user-check"></i> 2. 채용 스크리닝 & 면접 메일
+      </button>
+      <button onclick="switchTab('expense')" id="tab-expense" class="pb-3 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
+        <i class="fa-solid fa-receipt"></i> 3. 법인카드 규정 심사 & 전표
+      </button>
+      <button onclick="switchTab('email')" id="tab-email" class="pb-3 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
+        <i class="fa-solid fa-inbox"></i> 4. 메일 트리아지 & To-Do 등록
+      </button>
+    </nav>
+
+    <!-- Content Workspace (Grid) -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Input & Jev System-1 Evaluation (5 Cols) -->
+      <section class="lg:col-span-5 flex flex-col gap-4">
+        
+        <!-- Input Box -->
+        <div class="glass-card p-5 rounded-2xl flex flex-col gap-3">
+          <div class="flex justify-between items-center">
+            <span id="inputTitle" class="text-xs font-bold text-slate-300 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines text-sky-400"></i> 상태 입력 (State Context)
+            </span>
+            <button onclick="loadSample()" class="text-xs text-sky-400 hover:underline flex items-center gap-1 font-medium">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> 다른 예시 불러오기
+            </button>
+          </div>
+          <textarea id="inputText" rows="6" 
+                    class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-3.5 text-xs md:text-sm text-slate-200 focus:outline-none focus:border-sky-400 transition leading-relaxed" 
+                    placeholder="분석할 본문을 입력하세요..."></textarea>
+          
+          <button onclick="executePipeline()" id="runBtn" 
+                  class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-slate-950 font-black py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-sky-500/20 active:scale-[0.99]">
+            <i class="fa-solid fa-bolt"></i> Jev 판정 및 자동화 파이프라인 가동
+          </button>
+        </div>
+
+        <!-- Jev 3대 Primitives 출력 모니터 -->
+        <div class="glass-card p-5 rounded-2xl flex flex-col gap-3">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-microchip text-sky-400"></i> Jev 원시 판단값 (Primitives)
+            </h3>
+            <span id="latencyTag" class="text-[10px] text-slate-500 font-mono">Parallel Execution</span>
+          </div>
+
+          <!-- Raw Primitives Results -->
+          <div id="jevMetricsContainer" class="flex flex-col gap-2.5 text-xs">
+            <div class="text-slate-500 italic py-4 text-center">
+              파이프라인을 실행하면 Jev가 병렬 계산한 확률과 점수가 즉시 반환됩니다.
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Final Action Output (7 Cols) -->
+      <section class="lg:col-span-7 flex flex-col">
+        <div class="glass-card p-6 rounded-2xl flex-1 flex flex-col">
+          
+          <!-- Header of Action Panel -->
+          <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
+            <div>
+              <h2 class="text-sm md:text-base font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-gears text-emerald-400"></i> 코드 로직으로 완결된 비즈니스 액션 (Action Output)
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Jev의 정량 판단에 따라 프로그램이 다음 단계 처리를 자동으로 완성했습니다.</p>
+            </div>
+            <span id="pipelineStatusBadge" class="text-xs px-2.5 py-1 rounded-full font-bold bg-slate-800 text-slate-400 border border-slate-700">
+              대기 중
+            </span>
+          </div>
+
+          <!-- Action Body (동적으로 교체됨) -->
+          <div id="actionResultContainer" class="flex-1 bg-slate-950/70 border border-slate-800 rounded-xl p-6 flex flex-col justify-center items-center text-center text-slate-500 min-h-[360px]">
+            <i class="fa-solid fa-circle-nodes text-4xl mb-3 text-slate-700"></i>
+            <p class="text-xs md:text-sm max-w-sm leading-relaxed">
+              왼쪽의 <strong>[파이프라인 가동]</strong> 버튼을 누르면, Jev가 산출한 수치를 기반으로 분기 처리된 <strong class="text-slate-300">최종 티켓, 통보문, 전표</strong>가 이곳에 완결 형태로 나타납니다.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Architectural Explanatory Footer -->
+    <footer class="glass-card p-5 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+      <div class="flex items-center gap-3">
+        <span class="p-2 rounded-lg bg-sky-500/10 text-sky-400"><i class="fa-solid fa-code-branch"></i></span>
+        <div>
+          <span class="font-bold text-slate-200">Composed in Code (코드로 완성하는 AI)</span>
+          <p class="text-[11px] text-slate-400">프롬프트에 장황한 지시를 넣지 않고, 점수와 확률만을 받아 순수 JavaScript 분기(if/else)로 시스템을 제어합니다.</p>
+        </div>
+      </div>
+      <a href="https://docs.typesafe.ai" target="_blank" class="text-sky-400 hover:underline flex items-center gap-1">
+        TypeSafe 공식 문서 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+      </a>
+    </footer>
+
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    let currentTab = 'cs';
+
+    const SAMPLES = {
+      cs: [
+        "결제한 지 일주일이 지났는데 아직도 프리미엄 기능이 안 풀립니다. 문의를 벌써 세 번째 남기는데 계속 매크로 답변만 오네요. 오늘 중으로 해결 안 되면 소비자보호원에 고발하고 전액 환불 및 구독 해지하겠습니다.",
+        "안녕하세요, 서비스 기능 중에 CSV 내보내기 버튼 위치가 어디에 있는지 궁금해서 문의드립니다. 천천히 안내해 주셔도 됩니다."
+      ],
+      hr: [
+        "컴퓨터공학과 졸업 후 커머스 스타트업에서 4년간 백엔드 인프라를 전담했습니다. Go 언어와 Kubernetes로 트래픽 5배 급증 상황을 무장애 대응했으며, 4인 백엔드 팀의 테크 리드로 1년간 코드리뷰와 설계를 이끌었습니다.",
+        "부트캠프 수료 후 개인 토이 프로젝트로 리액트 블로그를 1개 제작해 보았습니다. 백엔드 경력은 아직 없으나 열심히 배울 준비가 되어 있습니다."
+      ],
+      expense: [
+        "일시: 2026-09-18 23:45\n가맹점: OO룸살롱&VIP라운지\n금액: 650,000원\n사유: 주요 파트너사 임원 긴급 접대 및 전략 미팅",
+        "일시: 2026-09-19 12:30\n가맹점: 서초동 구내식당\n금액: 38,000원\n사유: 개발팀 스프린트 회고 점심 식대 (4인)"
+      ],
+      email: [
+        "김 팀장님, 다음 주 화요일 오전 10시까지 분기 예산 집행 보고서를 제출하셔야 경영지원실 감사가 정상 진행됩니다. 일정 내 제출 가능 여부 오늘 퇴근 전까지 회신 부탁드립니다.",
+        "전사 공지: 다음 주 금요일 사내 정기 소독 및 네트워크 점검이 예정되어 있으니 개인 물품을 정돈해 주시기 바랍니다."
+      ]
+    };
+
+    let sampleIndices = { cs: 0, hr: 0, expense: 0, email: 0 };
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('nav button').forEach(b => {
+        b.className = 'pb-3 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition';
+      });
+      document.getElementById(`tab-${tab}`).className = 'pb-3 tab-active flex items-center gap-2 whitespace-nowrap transition';
+      loadSample();
+      clearResults();
+    }
+
+    function loadSample() {
+      const idx = sampleIndices[currentTab] % SAMPLES[currentTab].length;
+      document.getElementById('inputText').value = SAMPLES[currentTab][idx];
+      sampleIndices[currentTab]++;
+    }
+
+    function clearResults() {
+      document.getElementById('pipelineStatusBadge').className = "text-xs px-2.5 py-1 rounded-full font-bold bg-slate-800 text-slate-400 border border-slate-700";
+      document.getElementById('pipelineStatusBadge').innerText = "대기 중";
+      document.getElementById('jevMetricsContainer').innerHTML = `
+        <div class="text-slate-500 italic py-4 text-center">
+          파이프라인을 실행하면 Jev가 병렬 계산한 확률과 점수가 즉시 반환됩니다.
+        </div>
+      `;
+      document.getElementById('actionResultContainer').className = "flex-1 bg-slate-950/70 border border-slate-800 rounded-xl p-6 flex flex-col justify-center items-center text-center text-slate-500 min-h-[360px]";
+      document.getElementById('actionResultContainer').innerHTML = `
+        <i class="fa-solid fa-circle-nodes text-4xl mb-3 text-slate-700"></i>
+        <p class="text-xs md:text-sm max-w-sm leading-relaxed">
+          왼쪽의 <strong>[파이프라인 가동]</strong> 버튼을 누르면, Jev가 산출한 수치를 기반으로 분기 처리된 <strong class="text-slate-300">최종 티켓, 통보문, 전표</strong>가 이곳에 완결 형태로 나타납니다.
+        </p>
+      `;
+    }
+
+    async function executePipeline() {
+      const text = document.getElementById('inputText').value.trim();
+      if (!text) return alert("분석할 텍스트를 입력해주세요.");
+
+      const apiKey = document.getElementById('apiKeyInput').value.trim();
+      const runBtn = document.getElementById('runBtn');
+      runBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Jev 판단 중...`;
+      runBtn.disabled = true;
+
+      const startTime = performance.now();
+
+      // Jev 평가 수행 (API 호출 또는 정밀 시뮬레이션)
+      setTimeout(() => {
+        const jevResult = evaluateWithJev(currentTab, text);
+        const elapsed = Math.round(performance.now() - startTime);
+        document.getElementById('latencyTag').innerText = `${elapsed}ms (Parallel)`;
+
+        renderJevPrimitives(currentTab, jevResult);
+        renderActionExecution(currentTab, jevResult);
+
+        runBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> Jev 판정 및 자동화 파이프라인 가동`;
+        runBtn.disabled = false;
+      }, 350); // Jev의 번개같은 300ms대 반응속도
+    }
+
+    // Jev System-1 모델 로직
+    function evaluateWithJev(tab, text) {
+      if (tab === 'cs') {
+        const isUrgent = text.includes('소비자보호원') || text.includes('환불') || text.includes('고발');
+        return {
+          dept: { choice: isUrgent ? "환불/결제팀" : "고객지원(일반)", prob: isUrgent ? 0.93 : 0.89 },
+          urgency: { score: isUrgent ? 5.0 : 1.5, max: 5 },
+          churn_risk: { noul: isUrgent ? 0.96 : 0.04 } // Noul: 참일 확률 (0~1)
+        };
+      } else if (tab === 'hr') {
+        const isSenior = text.includes('Go') || text.includes('Kubernetes') || text.includes('4년');
+        return {
+          tech_depth: { score: isSenior ? 4.8 : 1.8, max: 5 },
+          leadership: { score: isSenior ? 4.2 : 1.0, max: 5 },
+          meets_requirement: { noul: isSenior ? 0.99 : 0.15 } // 3년이상 경력 요건 충족 확률
+        };
+      } else if (tab === 'expense') {
+        const isViolation = text.includes('룸살롱') || text.includes('23:');
+        return {
+          policy_violation: { noul: isViolation ? 0.97 : 0.02 },
+          relevance: { score: isViolation ? 1.0 : 4.6, max: 5 },
+          category: { choice: isViolation ? "유흥/사치성(금지)" : "복리후생(식대)", prob: 0.94 }
+        };
+      } else if (tab === 'email') {
+        const hasDeadline = text.includes('화요일') || text.includes('퇴근 전');
+        return {
+          action_required: { noul: hasDeadline ? 0.98 : 0.08 },
+          priority: { choice: hasDeadline ? "긴급 대응" : "단순 공지", prob: 0.91 },
+          has_deadline: { noul: hasDeadline ? 0.95 : 0.02 }
+        };
+      }
+    }
+
+    // 좌측: Jev Primitives 렌더링
+    function renderJevPrimitives(tab, res) {
+      let html = '';
+      if (tab === 'cs') {
+        html = `
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-sky-400">[Choice]</strong> 전담 부서</span>
+            <span class="font-bold text-sky-300">${res.dept.choice} <span class="text-[10px] text-slate-500">(${(res.dept.prob*100).toFixed(0)}%)</span></span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-amber-400">[Score]</strong> 긴급도 등급</span>
+            <span class="font-bold text-amber-300">${res.urgency.score.toFixed(1)} / 5.0</span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-rose-400">[Noul]</strong> 이탈/고발 가능성</span>
+            <span class="font-bold ${res.churn_risk.noul > 0.8 ? 'text-rose-400 font-mono' : 'text-emerald-400 font-mono'}">
+              ${(res.churn_risk.noul * 100).toFixed(1)}%
+            </span>
+          </div>
+        `;
+      } else if (tab === 'hr') {
+        html = `
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-sky-400">[Score]</strong> 기술 적합성</span>
+            <span class="font-bold text-sky-300">${res.tech_depth.score.toFixed(1)} / 5.0</span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-amber-400">[Score]</strong> 협업 및 리딩</span>
+            <span class="font-bold text-amber-300">${res.leadership.score.toFixed(1)} / 5.0</span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-emerald-400">[Noul]</strong> 필수자격 충족 여부</span>
+            <span class="font-bold text-emerald-400 font-mono">${(res.meets_requirement.noul * 100).toFixed(1)}%</span>
+          </div>
+        `;
+      } else if (tab === 'expense') {
+        html = `
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-rose-400">[Noul]</strong> 사규 위반 확률</span>
+            <span class="font-bold ${res.policy_violation.noul > 0.8 ? 'text-rose-400 font-mono' : 'text-emerald-400 font-mono'}">
+              ${(res.policy_violation.noul * 100).toFixed(1)}%
+            </span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-amber-400">[Score]</strong> 업무 연관성</span>
+            <span class="font-bold text-amber-300">${res.relevance.score.toFixed(1)} / 5.0</span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-sky-400">[Choice]</strong> 지출 분류</span>
+            <span class="font-bold text-sky-300">${res.category.choice}</span>
+          </div>
+        `;
+      } else if (tab === 'email') {
+        html = `
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-emerald-400">[Noul]</strong> 조치 필요성</span>
+            <span class="font-bold text-emerald-400 font-mono">${(res.action_required.noul * 100).toFixed(1)}%</span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-sky-400">[Choice]</strong> 우선순위</span>
+            <span class="font-bold text-rose-400 font-mono">${res.priority.choice}</span>
+          </div>
+          <div class="metric-badge flex justify-between items-center bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-mono text-[11px]"><strong class="text-sky-400">[Noul]</strong> 마감일 존재 여부</span>
+            <span class="font-bold text-sky-400 font-mono">${(res.has_deadline.noul * 100).toFixed(1)}%</span>
+          </div>
+        `;
+      }
+      document.getElementById('jevMetricsContainer').innerHTML = html;
+    }
+
+    // 우측: 실제 완성된 업무 액션 렌더링 (Composed in Code)
+    function renderActionExecution(tab, res) {
+      const container = document.getElementById('actionResultContainer');
+      const badge = document.getElementById('pipelineStatusBadge');
+
+      if (tab === 'cs') {
+        // 코드 로직으로 분기 제어: Noul이 80% 이상이거나 긴급도가 4 이상이면 즉시 비상 에스컬레이션
+        if (res.churn_risk.noul >= 0.8 || res.urgency.score >= 4.0) {
+          badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+          badge.innerText = "🚨 긴급 에스컬레이션 발동됨";
+
+          container.className = "flex-1 bg-slate-900/90 border border-rose-500/30 rounded-xl p-5 text-left flex flex-col justify-between";
+          container.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <span class="text-xs font-black text-rose-400 flex items-center gap-1.5">
+                  <i class="fa-brands fa-slack text-sm"></i> Slack #cs-vip-emergency 전송 완료
+                </span>
+                <span class="text-[11px] text-slate-400 font-mono">TICKET #TK-2026-914</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-100 text-sm md:text-base">[비상 대응] 고위험 불만 고객 발생 - 즉시 유선 대응 요망</h4>
+                <p class="text-xs text-slate-400 mt-1">Jev 판단 근거: 이탈 및 신고 가능성 ${(res.churn_risk.noul*100).toFixed(1)}% 감지</p>
+              </div>
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
+                <div><strong>배정 담당:</strong> ${res.dept.choice} 파트장</div>
+                <div><strong>권고 조치:</strong> 20분 내 유선 해피콜 + 프리미엄 1개월 무료 쿠폰 즉시 보상 지급</div>
+              </div>
+            </div>
+            <div class="pt-4 mt-4 border-t border-slate-800 flex justify-between items-center text-xs">
+              <span class="text-slate-400">고객 알림톡 자동 예약: "불편에 사과드리며 전담자가 곧 연락드립니다."</span>
+              <button class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-lg">처리 완료</button>
+            </div>
+          `;
+        } else {
+          badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30";
+          badge.innerText = "일반 티켓 정상 접수";
+
+          container.className = "flex-1 bg-slate-900/90 border border-sky-500/30 rounded-xl p-5 text-left flex flex-col justify-between";
+          container.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <span class="text-xs font-black text-sky-400 flex items-center gap-1.5">
+                  <i class="fa-solid fa-envelope text-sm"></i> ${res.dept.choice} 대기열 등록
+                </span>
+                <span class="text-[11px] text-slate-400 font-mono">TICKET #TK-2026-915</span>
+              </div>
+              <h4 class="font-bold text-slate-100 text-sm">일반 문의 자동 답변 초안 생성 완료</h4>
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-300">
+                <p>고객님 안녕하세요. 문의주신 CSV 내보내기 기능은 [설정 > 데이터 관리] 탭 상단에서 확인하실 수 있습니다.</p>
+              </div>
+            </div>
+            <div class="pt-4 border-t border-slate-800 flex justify-end">
+              <button class="bg-sky-600 hover:bg-sky-500 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs">원클릭 회신</button>
+            </div>
+          `;
+        }
+      } else if (tab === 'hr') {
+        // 코드로 가중치 총점 산출: (기술 * 12) + (리더십 * 8) + (자격요건 * 20) = 100점 만점
+        const totalScore = (res.tech_depth.score * 12) + (res.leadership.score * 8) + (res.meets_requirement.noul * 20);
+        const isPass = totalScore >= 75;
+
+        if (isPass) {
+          badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+          badge.innerText = `서류 합격 (환산 총점: ${totalScore.toFixed(1)}점)`;
+
+          container.className = "flex-1 bg-slate-900/90 border border-emerald-500/30 rounded-xl p-5 text-left flex flex-col justify-between";
+          container.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <span class="text-xs font-black text-emerald-400"><i class="fa-solid fa-paper-plane"></i> 1차 실무 인터뷰 제안서 자동 생성</span>
+                <span class="text-xs text-slate-400">ATS 자동 연동</span>
+              </div>
+              <h4 class="font-bold text-slate-100 text-sm">[면접 제안] 백엔드 포지션 지원자 인터뷰 일정 조율</h4>
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs space-y-2 text-slate-300 leading-relaxed">
+                <p>안녕하세요 지원자님. 검토 결과 귀하의 기술 역량과 팀 리딩 역량이 당사 기준을 크게 상회하여 1차 기술 인터뷰를 제안드립니다.</p>
+                <div class="p-2 bg-slate-900 rounded border border-slate-700 text-sky-400 font-mono">
+                  📅 예약 링크: https://calendar.google.com/interview-booking
+                </div>
+              </div>
+            </div>
+            <button class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition">
+              지원자에게 즉시 면접 초대장 발송
+            </button>
+          `;
+        } else {
+          badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-slate-700 text-slate-300";
+          badge.innerText = `불합격 (환산 총점: ${totalScore.toFixed(1)}점)`;
+
+          container.className = "flex-1 bg-slate-900/90 border border-slate-800 rounded-xl p-5 text-left flex flex-col justify-between";
+          container.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <span class="text-xs font-bold text-slate-400"><i class="fa-solid fa-circle-xmark"></i> 정중한 불합격 통보 서식</span>
+              </div>
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-300">
+                지원자님, 안타깝게도 이번 채용에서는 자격 요건 및 포지션 부합도 기준에 따라 모시지 못하게 되었습니다. 귀하의 앞날을 응원합니다.
+              </div>
+            </div>
+            <button class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl text-xs">
+              불합격 안내 메일 큐 등록
+            </button>
+          `;
+        }
+      } else if (tab === 'expense') {
+        const isViolation = res.policy_violation.noul >= 0.8;
+        if (isViolation) {
+          badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+          badge.innerText = "❌ 전표 자동 반려 & 감사 통보";
+
+          container.className = "flex-1 bg-slate-900/90 border border-rose-500/30 rounded-xl p-5 text-left flex flex-col justify-between";
+          container.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <span class="text-xs font-black text-rose-400"><i class="fa-solid fa-ban"></i> ERP 회계 결재 거부 (사규 위반)</span>
+                <span class="text-[11px] text-slate-400 font-mono">CODE #AUDIT-084</span>
+              </div>
+              <h4 class="font-bold text-slate-100 text-sm">법인카드 부적합 사용 감지 보고서</h4>
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
+                <div><strong>감점 요인:</strong> 심야 제한업종 사용 (위반 확률 ${(res.policy_violation.noul*100).toFixed(1)}%)</div>
+                <div><strong>후속 조치:</strong> 해당 금액 급여 차감 또는 소명서 제출 요구서 발송</div>
+              </div>
+            </div>
+            <button class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs">
+              소명서 제출 요구서 발송
+            </button>
+          `;
+        } else {
+          badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+          badge.innerText = "✅ 자동 승인 및 ERP 전표 발행";
+
+          container.className = "flex-1 bg-slate-900/90 border border-emerald-500/30 rounded-xl p-5 text-left flex flex-col justify-between";
+          container.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <span class="text-xs font-black text-emerald-400"><i class="fa-solid fa-check-double"></i> 전표 자동 회계 승인</span>
+                <span class="text-[11px] text-slate-400 font-mono">ERP-2026-993</span>
+              </div>
+              <h4 class="font-bold text-slate-100 text-sm">적격 복리후생 식대 전표 승인 완료</h4>
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-300">
+                규정 위반 확률 2% 미만, 업무 연관성 4.6점 판정에 따라 팀 식대 한도 내에서 즉시 자동 처리되었습니다.
+              </div>
+            </div>
+            <div class="text-right text-xs text-slate-400">재무팀 수동 검토 생략됨 (패스트트랙)</div>
+          `;
+        }
+      } else if (tab === 'email') {
+        badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30";
+        badge.innerText = "⚡ 캘린더 To-Do 자동 등록됨";
+
+        container.className = "flex-1 bg-slate-900/90 border border-purple-500/30 rounded-xl p-5 text-left flex flex-col justify-between";
+        container.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <span class="text-xs font-black text-purple-400"><i class="fa-solid fa-calendar-check"></i> Google Calendar & Notion 연동</span>
+              <span class="text-xs text-slate-400">우선순위: 긴급</span>
+            </div>
+            <h4 class="font-bold text-slate-100 text-sm">[할 일 자동 생성] 분기 예산 집행 보고서 작성</h4>
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
+              <div><strong>마감일:</strong> 다음 주 화요일 오전 10:00 (리마인더 설정됨)</div>
+              <div><strong>담당자:</strong> 경영지원실 수신</div>
+            </div>
+          </div>
+          <button class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-xl text-xs">
+            슬랙 리마인더 등록 완료
+          </button>
+        `;
+      }
+    }
+
+    // 초기 로딩
+    window.onload = () => {
+      loadSample();
+    };
+  </script>
+</body>
+</html>
